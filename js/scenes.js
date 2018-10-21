@@ -1,2 +1,4 @@
 //import {}
-//export {}
+export {currentScene}
+
+let currentScene = "start";
