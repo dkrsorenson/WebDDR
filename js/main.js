@@ -1,14 +1,15 @@
-//import {} from './classes.js';
+import {currentScene} from './scenes';
 export {init};
 
 // variables
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
-const screenWidth = 600;
-const screenHeight = 400;
+let screenWidth;
+let screenHeight;
 
 function init(){
- 
+    screenWidth = canvas.width;
+    screenHeight = canvas.height;
     // call game loop
     loop();
 }
@@ -16,5 +17,13 @@ function init(){
 
 function loop(){
     // schedule a call to loop() in 1/60th of a second
-	requestAnimationFrame(loop);
+    requestAnimationFrame(loop);
+
+    switch (currentScene){
+        case "start":
+            break;
+        default:
+            break;
+    }
+    
 }
