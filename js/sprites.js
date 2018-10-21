@@ -1,5 +1,5 @@
-import {} from './utilities.js';
-export {};
+import { getRandomUnitVector } from './utilities.js';
+export { createArrowSprite, createRectSprite, createBackgroundSprite };
 
 class Sprite {
     constructor(x=0,y=0,fwd={x:0,y:0},speed=0){
@@ -21,7 +21,9 @@ class ImageSprite extends Sprite {
         super(x,y,fwd,speed);
         this.width = width;
         this.height = height;
-        this.image = image;
+        let newImage = new Image();
+        newImage.src = image;
+        this.image = newImage;
     }
     
     draw(ctx){
@@ -31,7 +33,7 @@ class ImageSprite extends Sprite {
 	}
 }
 
-class RectSprite extends sprite{
+class RectSprite extends Sprite{
 	constructor(x=0,y=0,fwd={x:0,y:1},speed=0, color="red", width=25, height=25){
 		super(x,y,fwd,speed);
 		this.color = color;
@@ -41,8 +43,34 @@ class RectSprite extends sprite{
 
 	draw(ctx){ // NEW implementation for "Square Sprite"
 		ctx.save();
-		ctx.fillStyle = this.color;
+        ctx.fillStyle = this.color;
 		ctx.fillRect(this.x, this.y, this.width, this.height);
 		ctx.restore();
 	}
+}
+
+function createBackgroundSprite(){
+    let x = 0;
+    let y = 0;
+    let width = 1200;
+    let height = 800;
+    let speed = 0;
+    let fwd = {x:0, y:0};
+    let background = new ImageSprite(x,y,fwd,speed,width,height,"media/Background.png");
+    return background;
+}
+
+function createArrowSprite(x=0,y=0){
+    let width = 50;
+    let height = 70;
+    let speed = 0;
+    let fwd = {x:0, y:0};
+    let arrow = new ImageSprite(x,y,fwd,speed,width,height,"media/ArrowSprite.png");
+    return arrow;
+}
+
+function createRectSprite(x=0, y=0,color="red",width=50,height=50){
+    let speed = 0;
+    let rect = new RectSprite(x,y,getRandomUnitVector(),speed,color,width,height);
+    return rect;
 }
