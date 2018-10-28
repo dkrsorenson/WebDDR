@@ -1,4 +1,4 @@
-import {currentScene, drawStart, startInit, gameInit, drawGame,drawSongSelectScreen,menuScroll,songSelectInit } from './scenes.js';
+import {currentScene, drawStart, startInit, gameInit, drawGame,drawSongSelectScreen,menuScroll, songSelectInit } from './scenes.js';
 export {init};
 
 // variables

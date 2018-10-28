@@ -111,8 +111,13 @@ class ButtonSprite {
 }
 
 class ArrowSprite extends Sprite{
-    constructor(x=0,y=0,fwd={x:0,y:1},speed=0, color="red", width=25, height=25, angle=0, freeze=false){
-		super(x,y,fwd,speed);
+    constructor(x=0,y=0, color="red", width=25, height=25, angle=0, freeze=false){
+        if (freeze){
+            super(x,y,{x:0,y:0},0);
+        }
+        else {
+            super(x, y, {x:-1,y:0}, 4);
+        }
         this.color = color;
 		this.width = width;
         this.height = height;
@@ -178,6 +183,34 @@ class ArrowSprite extends Sprite{
         ctx.stroke();
 		ctx.restore();
     }
+
+    move() {
+        this.x += this.fwd.x * this.speed;
+        this.y += this.fwd.y * this.speed;
+    }
+
+    getPosition() {
+        return {x: this.x, y: this.y};
+    }
+
+    setPosition(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    checkDistance(x, checkDistance = 25){
+        let xPoint = x - this.x;
+
+        // distance check
+        if (Math.sqrt((xPoint * xPoint)) < checkDistance) {
+            return true;
+        }
+        return false;
+    }
+
+    getKey(){
+        return this.key;
+    }
 }
 
 function createBackgroundSprite(){
@@ -198,7 +231,7 @@ function createRectSprite(x=0, y=0,color="red",width=50,height=50){
 }
 
 
-function createArrowSprite(x=0,y=0, color="white", width=50, height=75, angle=0){
-    let arrow = new ArrowSprite(x,y,{x:0, y:0},1,color,width,height,angle);
+function createArrowSprite(x=0,y=0, color="white", width=50, height=75, angle=0, freeze){
+    let arrow = new ArrowSprite(x,y,color,width,height,angle, freeze);
     return arrow;
 }
