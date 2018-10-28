@@ -1,7 +1,7 @@
 import {ButtonSprite} from './sprites.js';
 import {Song} from './song.js';
-import {keysPressed} from './input.js';
-export {currentScene,drawSongSelectScreen,menuScroll,drawSongSelectItems};
+import {keysPressed,keysPressedDown} from './input.js';
+export {currentScene,drawStartMenu,drawSongSelectScreen,menuScroll};
 
 let currentScene = "songSelect";
 
@@ -12,7 +12,7 @@ let currentSong;
 let currentPos = 0;
 let up,down;
 
-function drawMainMenu(){
+function drawStartMenu(){
     
 }
 
@@ -46,37 +46,53 @@ function drawSongSelectScreen(ctx,screenWidth,screenHeight){
         buttons.push(newBtn);
     }
     
-    drawSongSelectItems(ctx,screenWidth,screenHeight);
+    drawSongMenuItems(ctx,screenWidth,screenHeight);
 }
 
 function menuScroll(){
-    // up key
-    if(keysPressed["38"] && !up){
-        up = true;
+//    // up key
+//    if(keysPressed["38"] && !up){
+//        up = true;
+//        if(currentPos <= 0){
+//            currentPos = buttons.length - 1;
+//        }
+//        else currentPos--;
+//    }
+//    else if(!keysPressed["38"] && up){
+//        up = false;
+//    }
+//    
+//    // down key
+//    if(keysPressed["40"] && !down){
+//        down = true;
+//        if(currentPos >= buttons.length - 1){
+//            currentPos = 0;
+//        }
+//        else currentPos++;
+//    }
+//    else if(!keysPressed["40"] && down){
+//        down = false;
+//    }
+    
+        // up key
+    if(keysPressedDown["38"]){
         if(currentPos <= 0){
             currentPos = buttons.length - 1;
         }
         else currentPos--;
     }
-    else if(!keysPressed["38"] && up){
-        up = false;
-    }
     
     // down key
-    if(keysPressed["40"] && !down){
-        down = true;
+    if(keysPressedDown["40"]){
         if(currentPos >= buttons.length - 1){
             currentPos = 0;
         }
         else currentPos++;
     }
-    else if(!keysPressed["40"] && down){
-        down = false;
-    }
 }
 
-function drawSongSelectItems(ctx,screenWidth,screenHeight){
-    //debugger;
+function drawSongMenuItems(ctx,screenWidth,screenHeight){
+    menuScroll();
     let x = 75, y = screenHeight/2;
     ctx.fillRect(0,0,screenWidth,screenHeight);
     let drawPos = 0;
