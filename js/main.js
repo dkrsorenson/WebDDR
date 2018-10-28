@@ -1,4 +1,4 @@
-import {currentScene,drawStartMenu,drawSongSelectScreen,menuScroll} from './scenes.js';
+import {currentScene, drawStart, startInit, gameInit, drawGame, drawStartMenu,drawSongSelectScreen,menuScrol } from './scenes.js';
 export {init};
 
 // variables
@@ -10,7 +10,10 @@ let screenHeight;
 function init(){
     screenWidth = canvas.width;
     screenHeight = canvas.height;
-    
+  
+    // initialize scenes
+    startInit();
+    gameInit(ctx);
 
     // call game loop
     loop();
@@ -23,12 +26,12 @@ function loop(){
 
     switch (currentScene){
         case "start":
-            
-            break;
-        case "game":
+            drawStart(ctx, screenWidth, screenHeight);
             break;
         case "songSelect":
             drawSongSelectScreen(ctx,screenWidth,screenHeight);
+        case "game":
+            drawGame(ctx, screenWidth, screenHeight);
             break;
         default:
             break;
