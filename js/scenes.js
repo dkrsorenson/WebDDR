@@ -1,25 +1,56 @@
 import { createArrowSprite, createRectSprite, createBackgroundSprite, ButtonSprite } from './sprites.js'
 import {Song} from './song.js';
-import { getRandomColor } from './utilities.js'
-import { keysPressed, keysPressedDown } from './input.js'
-export { currentScene, drawStart, startInit, gameInit, drawGame, drawSongSelectScreen, menuScroll }
+import { getRandomColor } from './utilities.js';
+import { keysPressed, keysPressedDown } from './input.js';
+export { currentScene, drawStart, startInit, gameInit, drawGame, drawSongSelectScreen, menuScroll, songSelectInit }
 
-let currentScene = "game";
+let currentScene = "start";
 let spriteList = [];
 let backgroundSprite;
 let timer;
 
+// variables for song select screen
+let songs = [];
+let songButtons = [];
+let currentSong;
+
+// menu scroll stuff
+let currentPos = 0;
+let up,down,enter;
+
+// variables for start menu
+let menuButtons = [];
+let startX = 50;
+let startY = 200;
+
 function startInit(){
     spriteList = [];
     backgroundSprite = createBackgroundSprite();
-    timer = 0;
+    timer = 0;   
+    
+    // buttons
+    let startButton = new ButtonSprite(50,200,"cornflowerblue","navy","black",200,50,"Start",75);
+    let optionsButton = new ButtonSprite(50,270,"cornflowerblue","navy","black",200,50,"Options",65);
+    
+    menuButtons.push(startButton);
+    menuButtons.push(optionsButton);
 }
 
 function drawStart(ctx, screenWidth, screenHeight){
+    
     // draw background
     drawBackgroundColors(ctx, screenWidth, screenHeight);
     backgroundSprite.draw(ctx);
     //drawBackgroundColors(ctx, screenWidth, screenHeight);
+    
+    for (let i = 0; i < menuButtons.length; i++){
+        if(i == currentPos) menuButtons[i].setFillColor("lightblue");
+        else menuButtons[i].setFillColor("cornflowerblue");
+        menuButtons[i].draw(ctx);
+    }
+    
+    console.log(currentPos);
+    menuScroll(menuButtons);
     
     timer++;
 }
@@ -54,105 +85,86 @@ function drawGame(ctx, screenWidth, screenHeight){
     }
 }
 
-
-let currentScene = "songSelect";
-
-// variables for song select screen
-let songs = [];
-let buttons = [];
-let currentSong;
-let currentPos = 0;
-let up,down;
-
-function drawStartMenu(){
-    
+function songSelectInit(){
+    createSongs();
+    for(let s of songs){
+        let newBtn = new ButtonSprite(50,50,"green","white","black",200,50,s.songName,15);
+        songButtons.push(newBtn);
+    }
 }
 
-function drawPlayScreen(){
-    
-}
-
-function drawSongSelectScreen(ctx,screenWidth,screenHeight){
+function createSongs(){
     let s1 = new Song("song 1", 0, 10, 1);
     let s2 = new Song("song 2", 0, 15, 2);
     let s3 = new Song("song 3", 0, 20, 3);
     let s4 = new Song("song 4", 0, 25, 4);
     let s5 = new Song("song 5", 0, 30, 5);
-    
-    
     let s6 = new Song("song 6", 0, 25, 4);
     let s7 = new Song("song 7", 0, 30, 5);
+    
     songs.push(s1);
     songs.push(s2);
     songs.push(s3);
     songs.push(s4);
     songs.push(s5);
-    
     songs.push(s6);
     songs.push(s7);
-    
-    currentSong = songs[0];
-    
-    for(let s of songs){
-        let newBtn = new ButtonSprite(50,50,"green","white","black",200,50,s.songName);
-        buttons.push(newBtn);
-    }
-    
-    drawSongMenuItems(ctx,screenWidth,screenHeight);
 }
 
-function menuScroll(){
-//    // up key
-//    if(keysPressed["38"] && !up){
-//        up = true;
-//        if(currentPos <= 0){
-//            currentPos = buttons.length - 1;
-//        }
-//        else currentPos--;
-//    }
-//    else if(!keysPressed["38"] && up){
-//        up = false;
-//    }
-//    
-//    // down key
-//    if(keysPressed["40"] && !down){
-//        down = true;
-//        if(currentPos >= buttons.length - 1){
-//            currentPos = 0;
-//        }
-//        else currentPos++;
-//    }
-//    else if(!keysPressed["40"] && down){
-//        down = false;
-//    }
-    
-        // up key
-    if(keysPressedDown["38"]){
+function menuScroll(arr=[]){
+    // up key
+    if(keysPressed["38"] && !up){
+        up = true;
         if(currentPos <= 0){
-            currentPos = buttons.length - 1;
+            currentPos = arr.length - 1;
         }
         else currentPos--;
     }
+    else if(!keysPressed["38"] && up){
+        up = false;
+    }
     
     // down key
-    if(keysPressedDown["40"]){
-        if(currentPos >= buttons.length - 1){
+    if(keysPressed["40"] && !down){
+        down = true;
+        if(currentPos >= arr.length - 1){
             currentPos = 0;
         }
         else currentPos++;
     }
+    else if(!keysPressed["40"] && down){
+        down = false;
+    }
+    
+    // enter key
+    if(keysPressed["13"] && !enter){
+        enter = true;
+        if(currentScene == "start"){
+            if(arr[currentPos].getName() == "Start"){
+                currentScene = "songSelect";
+            }
+        }
+        else if(currentScene == "songSelect"){
+            //currentSong = arr[currentPos].getName();
+            currentScene = "game";
+        }
+    }
+    else if(!keysPressed["13"] && enter){
+        enter = false;
+    }
 }
 
-function drawSongMenuItems(ctx,screenWidth,screenHeight){
-    menuScroll();
+function drawSongSelectScreen(ctx,screenWidth,screenHeight){
+    menuScroll(songButtons);
     let x = 75, y = screenHeight/2;
+    ctx.fillStyle = "black";
     ctx.fillRect(0,0,screenWidth,screenHeight);
     let drawPos = 0;
     
     let btnNum = currentPos;
     drawPos = -2;
-    for(let i = 0; i < buttons.length; i++){   
-        if(btnNum > buttons.length - 1){
+    for(let i = 0; i < songButtons.length; i++){   
+        if(btnNum > songButtons.length - 1){
             btnNum = 0;
         }
         
@@ -178,8 +190,8 @@ function drawSongMenuItems(ctx,screenWidth,screenHeight){
         }
         
         if(drawPos <= 2){
-            buttons[btnNum].setRectPos(x,y);
-            buttons[btnNum].draw(ctx);
+            songButtons[btnNum].setRectPos(x,y);
+            songButtons[btnNum].draw(ctx);
             drawPos++;
             btnNum++;
         }
@@ -187,7 +199,7 @@ function drawSongMenuItems(ctx,screenWidth,screenHeight){
     
     let tempPos = currentPos; 
     tempPos += 2;
-    currentSong = songs[tempPos%buttons.length];
+    currentSong = songs[tempPos % songButtons.length];
     
     
     ctx.save();
