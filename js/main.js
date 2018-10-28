@@ -1,4 +1,4 @@
-import {currentScene, drawStart, startInit, gameInit, drawGame, drawStartMenu,drawSongSelectScreen,menuScrol } from './scenes.js';
+import {currentScene, drawStart, startInit, gameInit, drawGame,drawSongSelectScreen,menuScroll } from './scenes.js';
 export {init};
 
 // variables
@@ -30,6 +30,7 @@ function loop(){
             break;
         case "songSelect":
             drawSongSelectScreen(ctx,screenWidth,screenHeight);
+            break;
         case "game":
             drawGame(ctx, screenWidth, screenHeight);
             break;

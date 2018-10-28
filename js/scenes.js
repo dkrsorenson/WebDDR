@@ -9,6 +9,23 @@ let spriteList = [];
 let backgroundSprite;
 let timer;
 
+// variables for song select screen
+let songs = [];
+let buttons = [];
+let currentSong;
+let currentPos = 0;
+let up,down;
+
+// variables for arrow locations
+let upArrowY = 240;
+let downArrowY = 480;
+let rightArrowY = 360;
+let leftArrowY = 600;
+let upAngle = 0;
+let rightAngle = 90 * Math.PI / 180;
+let downAngle = 180 * Math.PI / 180;
+let leftAngle = 270 * Math.PI / 180;
+
 function startInit(){
     spriteList = [];
     backgroundSprite = createBackgroundSprite();
@@ -36,40 +53,14 @@ function UpdateBackgroundColors(ctx){
 }
 
 function gameInit(){
+    timer = 0;
     spriteList = [];
 
-    // goal Arrow locations
-    let upArrowY = 240;
-    let downArrowY = 480;
-    let rightArrowY = 360;
-    let leftArrowY = 600;
-    let rightAngle = 90 * Math.PI / 180;
-    let downAngle = 180 * Math.PI / 180;
-    let leftAngle = 270 * Math.PI / 180;
-    spriteList.push(createArrowSprite(60, upArrowY, "green", 75, 100, 0 , true));
+    // goal arrows
+    spriteList.push(createArrowSprite(60, upArrowY, "green", 75, 100, upAngle , true));
     spriteList.push(createArrowSprite(60, rightArrowY, "blue", 75, 100, rightAngle, true));
     spriteList.push(createArrowSprite(60, downArrowY, "red", 75, 100, downAngle, true));
     spriteList.push(createArrowSprite(60, leftArrowY, "orange", 75, 100, leftAngle, true));
-
-    for (let i = 0; i < 120; i++)
-    {
-        if (i % 4 == 0){
-            let newSprite = createArrowSprite(900 + (i * 100), upArrowY, "white", 75, 100, 0);
-            spriteList.push(newSprite);
-        }
-        if (i % 4 == 1){
-            let newSprite = createArrowSprite(900 + (i * 100), rightArrowY, "white", 75, 100, rightAngle);
-            spriteList.push(newSprite);
-        }
-        if (i % 4 == 2){
-            let newSprite = createArrowSprite(900 + (i * 100), downArrowY, "white", 75, 100, downAngle);
-            spriteList.push(newSprite);
-        }
-        if (i % 4 == 3){
-            let newSprite = createArrowSprite(900 + (i * 100), leftArrowY, "white", 75, 100, leftAngle);
-            spriteList.push(newSprite);
-        }
-    }
 }
 
 function drawGame(ctx, screenWidth, screenHeight){
@@ -79,25 +70,55 @@ function drawGame(ctx, screenWidth, screenHeight){
     for (let s of spriteList){
         s.move();
         s.draw(ctx);
+
+        if (spriteList.indexOf(s) > 3) {
+            if (keysPressedDown[s.getKey()]){
+                if (s.checkDistance(60, 20)) {
+                    s.setPosition(-100, -100);
+                }
+            }
+        }
     }
+
+    for (let i = 0; i < spriteList.length; i++)
+    {
+        if (spriteList[i].x < -50 || spriteList[i].y < -50) {
+            for (let j = i; j < spriteList.length; j++) {
+                if (j < spriteList.length - 1){
+                    spriteList[j] = spriteList[j+1];
+                }
+                else
+                    spriteList.pop();
+            }
+        }
+    }
+    
+    // create random arrows
+    timer++;
+
+    if (timer % 30 == 0)
+        createRandomArrow();
 }
 
-
-let currentScene = "songSelect";
-
-// variables for song select screen
-let songs = [];
-let buttons = [];
-let currentSong;
-let currentPos = 0;
-let up,down;
-
-function drawStartMenu(){
-    
-}
-
-function drawPlayScreen(){
-    
+function createRandomArrow(){
+    let ranNum = Math.floor(Math.random() * 4);
+    let spawnX = 1200;
+    if (ranNum == 0){
+        let newSprite = createArrowSprite(spawnX, upArrowY, "white", 75, 100, 0);
+        spriteList.push(newSprite);
+    }
+    if (ranNum == 1){
+        let newSprite = createArrowSprite(spawnX, rightArrowY, "white", 75, 100, rightAngle);
+        spriteList.push(newSprite);
+    }
+    if (ranNum == 2){
+        let newSprite = createArrowSprite(spawnX, downArrowY, "white", 75, 100, downAngle);
+        spriteList.push(newSprite);
+    }
+    if (ranNum == 3){
+        let newSprite = createArrowSprite(spawnX, leftArrowY, "white", 75, 100, leftAngle);
+        spriteList.push(newSprite);
+    }
 }
 
 function drawSongSelectScreen(ctx,screenWidth,screenHeight){

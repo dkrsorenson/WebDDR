@@ -107,7 +107,7 @@ class ArrowSprite extends Sprite{
             super(x,y,{x:0,y:0},0);
         }
         else {
-            super(x, y, {x:-1,y:0}, 5);
+            super(x, y, {x:-1,y:0}, 4);
         }
         this.color = color;
 		this.width = width;
@@ -180,9 +180,27 @@ class ArrowSprite extends Sprite{
         this.y += this.fwd.y * this.speed;
     }
 
+    getPosition() {
+        return {x: this.x, y: this.y};
+    }
+
     setPosition(x, y) {
         this.x = x;
         this.y = y;
+    }
+
+    checkDistance(x, checkDistance = 25){
+        let xPoint = x - this.x;
+
+        // distance check
+        if (Math.sqrt((xPoint * xPoint)) < checkDistance) {
+            return true;
+        }
+        return false;
+    }
+
+    getKey(){
+        return this.key;
     }
 }
 
