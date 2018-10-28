@@ -23,6 +23,16 @@ let menuButtons = [];
 let startX = 50;
 let startY = 200;
 
+// variables for arrow locations
+let upArrowY = 240;
+let downArrowY = 480;
+let rightArrowY = 360;
+let leftArrowY = 600;
+let upAngle = 0;
+let rightAngle = 90 * Math.PI / 180;
+let downAngle = 180 * Math.PI / 180;
+let leftAngle = 270 * Math.PI / 180;
+
 function startInit(){
     spriteList = [];
     backgroundSprite = createBackgroundSprite();
@@ -67,13 +77,14 @@ function UpdateBackgroundColors(ctx){
 }
 
 function gameInit(){
+    timer = 0;
     spriteList = [];
 
-    // goal Arrow locations
-    spriteList.push(createArrowSprite(122, 130, "green", 75, 100, 0 , true));
-    spriteList.push(createArrowSprite(225, 250, "blue", 75, 100, (90 * Math.PI / 180), true));
-    spriteList.push(createArrowSprite(125, 380, "red", 75, 100, (180 * Math.PI / 180), true));
-    spriteList.push(createArrowSprite(25, 250, "orange", 75, 100, (270 * Math.PI / 180), true));
+    // goal arrows
+    spriteList.push(createArrowSprite(60, upArrowY, "green", 75, 100, upAngle , true));
+    spriteList.push(createArrowSprite(60, rightArrowY, "blue", 75, 100, rightAngle, true));
+    spriteList.push(createArrowSprite(60, downArrowY, "red", 75, 100, downAngle, true));
+    spriteList.push(createArrowSprite(60, leftArrowY, "orange", 75, 100, leftAngle, true));
 }
 
 function drawGame(ctx, screenWidth, screenHeight){
@@ -81,15 +92,63 @@ function drawGame(ctx, screenWidth, screenHeight){
 	ctx.clearRect(0, 0, screenWidth, screenHeight);
 
     for (let s of spriteList){
+        s.move();
         s.draw(ctx);
+        if (spriteList.indexOf(s) > 3) {
+            if (keysPressedDown[s.getKey()]){
+                if (s.checkDistance(60, 20)) {
+                    s.setPosition(-100, -100);
+                }
+            }
+        }
     }
-}
 
+    for (let i = 0; i < spriteList.length; i++)
+    {
+        if (spriteList[i].x < -50 || spriteList[i].y < -50) {
+            for (let j = i; j < spriteList.length; j++) {
+                if (j < spriteList.length - 1){
+                    spriteList[j] = spriteList[j+1];
+                }
+                else
+                    spriteList.pop();
+            }
+        }
+    }
+    
+    // create random arrows
+    timer++;
+
+    if (timer % 30 == 0)
+        createRandomArrow();
+}
+   
 function songSelectInit(){
     createSongs();
     for(let s of songs){
         let newBtn = new ButtonSprite(50,50,"green","white","black",200,50,s.songName,15);
         songButtons.push(newBtn);
+    }
+}
+
+function createRandomArrow(){
+    let ranNum = Math.floor(Math.random() * 4);
+    let spawnX = 1200;
+    if (ranNum == 0){
+        let newSprite = createArrowSprite(spawnX, upArrowY, "white", 75, 100, 0);
+        spriteList.push(newSprite);
+    }
+    if (ranNum == 1){
+        let newSprite = createArrowSprite(spawnX, rightArrowY, "white", 75, 100, rightAngle);
+        spriteList.push(newSprite);
+    }
+    if (ranNum == 2){
+        let newSprite = createArrowSprite(spawnX, downArrowY, "white", 75, 100, downAngle);
+        spriteList.push(newSprite);
+    }
+    if (ranNum == 3){
+        let newSprite = createArrowSprite(spawnX, leftArrowY, "white", 75, 100, leftAngle);
+        spriteList.push(newSprite);
     }
 }
 

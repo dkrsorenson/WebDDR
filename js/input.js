@@ -5,7 +5,7 @@ let keysPressed = {};
 let keysPressedDown = {};
 
 document.addEventListener("keydown", function(e) {
-    if(!keysPressed[e.keyCode]){
+    if(!keysPressed[e.keyCode] && !keysPressedDown[e.keyCode]){
         keysPressedDown[e.keyCode] = true;
     }
     else{
