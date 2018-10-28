@@ -1,4 +1,4 @@
-import {currentScene} from './scenes';
+import {currentScene, drawStart, startInit, gameInit, drawGame } from './scenes.js';
 export {init};
 
 // variables
@@ -10,6 +10,11 @@ let screenHeight;
 function init(){
     screenWidth = canvas.width;
     screenHeight = canvas.height;
+
+    // initialize scenes
+    startInit();
+    gameInit(ctx);
+
     // call game loop
     loop();
 }
@@ -21,6 +26,10 @@ function loop(){
 
     switch (currentScene){
         case "start":
+            drawStart(ctx, screenWidth, screenHeight);
+            break;
+        case "game":
+            drawGame(ctx, screenWidth, screenHeight);
             break;
         default:
             break;
