@@ -51,7 +51,7 @@ class RectSprite extends Sprite{
 }
 
 class ButtonSprite {
-	constructor(x=0,y=0,fillColor="red", strokeColor="white",textColor = "black", width=25, height=25,text="Song"){
+	constructor(x=0,y=0,fillColor="red", strokeColor="white",textColor = "black", width=25, height=25,text="Text",textPadding=0){
         this.x = x;
         this.y = y;
 		this.fillColor = fillColor;
@@ -61,6 +61,7 @@ class ButtonSprite {
 		this.height = height;
         this.text = text;
         this.radius = 20;
+        this.textPadding = textPadding;
 	}
 
 	draw(ctx){ 
@@ -84,7 +85,7 @@ class ButtonSprite {
         
         ctx.font = "20px Arial";
         ctx.fillStyle = this.textColor;
-        ctx.fillText(this.text,this.x + 15,this.y + (this.height/2) + 5,this.width - 20);
+        ctx.fillText(this.text,this.x + this.textPadding,this.y + (this.height/2) + 5,this.width - 20);
         ctx.restore();
         
 	}  
@@ -97,6 +98,14 @@ class ButtonSprite {
     setRectPos(x=0,y=0){
         this.x = x;
         this.y = y;
+    }
+    
+    setFillColor(fillColor="red"){
+        this.fillColor = fillColor;
+    }
+    
+    getName(){
+        return this.text;
     }
     
 }
