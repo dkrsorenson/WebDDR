@@ -38,10 +38,37 @@ function gameInit(){
     spriteList = [];
 
     // goal Arrow locations
-    spriteList.push(createArrowSprite(122, 130, "green", 75, 100, 0 , true));
-    spriteList.push(createArrowSprite(225, 250, "blue", 75, 100, (90 * Math.PI / 180), true));
-    spriteList.push(createArrowSprite(125, 380, "red", 75, 100, (180 * Math.PI / 180), true));
-    spriteList.push(createArrowSprite(25, 250, "orange", 75, 100, (270 * Math.PI / 180), true));
+    let upArrowY = 240;
+    let downArrowY = 480;
+    let rightArrowY = 360;
+    let leftArrowY = 600;
+    let rightAngle = 90 * Math.PI / 180;
+    let downAngle = 180 * Math.PI / 180;
+    let leftAngle = 270 * Math.PI / 180;
+    spriteList.push(createArrowSprite(60, upArrowY, "green", 75, 100, 0 , true));
+    spriteList.push(createArrowSprite(60, rightArrowY, "blue", 75, 100, rightAngle, true));
+    spriteList.push(createArrowSprite(60, downArrowY, "red", 75, 100, downAngle, true));
+    spriteList.push(createArrowSprite(60, leftArrowY, "orange", 75, 100, leftAngle, true));
+
+    for (let i = 0; i < 120; i++)
+    {
+        if (i % 4 == 0){
+            let newSprite = createArrowSprite(900 + (i * 100), upArrowY, "white", 75, 100, 0);
+            spriteList.push(newSprite);
+        }
+        if (i % 4 == 1){
+            let newSprite = createArrowSprite(900 + (i * 100), rightArrowY, "white", 75, 100, rightAngle);
+            spriteList.push(newSprite);
+        }
+        if (i % 4 == 2){
+            let newSprite = createArrowSprite(900 + (i * 100), downArrowY, "white", 75, 100, downAngle);
+            spriteList.push(newSprite);
+        }
+        if (i % 4 == 3){
+            let newSprite = createArrowSprite(900 + (i * 100), leftArrowY, "white", 75, 100, leftAngle);
+            spriteList.push(newSprite);
+        }
+    }
 }
 
 function drawGame(ctx, screenWidth, screenHeight){
@@ -49,6 +76,8 @@ function drawGame(ctx, screenWidth, screenHeight){
 	ctx.clearRect(0, 0, screenWidth, screenHeight);
 
     for (let s of spriteList){
+        s.move();
         s.draw(ctx);
     }
+
 }
