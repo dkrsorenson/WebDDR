@@ -1,4 +1,4 @@
-import {currentScene, drawStart, startInit, gameInit, drawGame,drawSongSelectScreen,menuScroll, songSelectInit } from './scenes.js';
+import {currentScene, drawStart, startInit, gameInit, drawGame,drawSongSelectScreen,menuScroll, songSelectInit, checkForEscape } from './scenes.js';
 export {init};
 
 // variables
@@ -24,7 +24,8 @@ function init(){
 function loop(){
     // schedule a call to loop() in 1/60th of a second
     requestAnimationFrame(loop);
-
+    checkForEscape();
+    
     switch (currentScene){
         case "start":
             drawStart(ctx, screenWidth, screenHeight);

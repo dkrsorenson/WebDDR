@@ -2,7 +2,7 @@ import { createArrowSprite, createRectSprite, createBackgroundSprite, ButtonSpri
 import {Song} from './song.js';
 import { getRandomColor } from './utilities.js';
 import { keysPressed, keysPressedDown } from './input.js';
-export { currentScene, drawStart, startInit, gameInit, drawGame, drawSongSelectScreen, menuScroll, songSelectInit }
+export { currentScene, drawStart, startInit, gameInit, drawGame, drawSongSelectScreen, menuScroll, songSelectInit, checkForEscape }
 
 let currentScene = "start";
 let spriteList = [];
@@ -16,7 +16,7 @@ let currentSong;
 
 // menu scroll stuff
 let currentPos = 0;
-let up,down,enter;
+let up,down,enter,escape;
 
 // variables for start menu
 let menuButtons = [];
@@ -39,15 +39,15 @@ function startInit(){
     timer = 0;   
     
     // buttons
-    let startButton = new ButtonSprite(50,200,"cornflowerblue","navy","black",200,50,"Start",75);
-    let optionsButton = new ButtonSprite(50,270,"cornflowerblue","navy","black",200,50,"Options",65);
+    let startButton = new ButtonSprite(50,300,"cornflowerblue","navy","black",250,70,"Start",90,30);
+    let optionsButton = new ButtonSprite(50,270,"cornflowerblue","navy","black",250,70,"Options",70,30);
     
     menuButtons.push(startButton);
     menuButtons.push(optionsButton);
 }
 
 function drawStart(ctx, screenWidth, screenHeight){
-    
+    let yIncrement = -100;
     // draw background
     drawBackgroundColors(ctx, screenWidth, screenHeight);
     backgroundSprite.draw(ctx);
@@ -56,7 +56,10 @@ function drawStart(ctx, screenWidth, screenHeight){
     for (let i = 0; i < menuButtons.length; i++){
         if(i == currentPos) menuButtons[i].setFillColor("lightblue");
         else menuButtons[i].setFillColor("cornflowerblue");
+        
+        menuButtons[i].setRectPos(screenWidth/2 - menuButtons[i].width/2,screenHeight/2 + yIncrement);
         menuButtons[i].draw(ctx);
+        yIncrement += 100;
     }
     
     menuScroll(menuButtons);
@@ -154,7 +157,7 @@ function createRandomArrow(){
 function createSongs(){
     let s1 = new Song("song 1", 0, 10, 1,"red");
     let s2 = new Song("song 2", 0, 15, 2,"orange");
-    let s3 = new Song("song 3", 0, 20, 3,"yellow");
+    let s3 = new Song("song 3", 0, 20, 3,"gold");
     let s4 = new Song("song 4", 0, 25, 4,"green");
     let s5 = new Song("song 5", 0, 30, 5,"blue");
     let s6 = new Song("song 6", 0, 25, 4,"purple");
@@ -209,6 +212,23 @@ function menuScroll(arr=[]){
     }
     else if(!keysPressed["13"] && enter){
         enter = false;
+    }
+}
+
+function checkForEscape(){
+    // escape key
+    if(keysPressed["27"] && !escape){
+        console.log("escaped");
+        escape = true;
+        if(currentScene == "songSelect"){
+            currentScene = "start";
+        }
+        else if(currentScene == "game"){
+            currentScene = "start";
+        }
+    }
+    else if(!keysPressed["27"] && escape){
+        escape = false;
     }
 }
 
