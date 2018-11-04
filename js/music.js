@@ -4,13 +4,16 @@ export {musicInit, musicUpdate};
 // variables
 let audioElement, analyserNode;
 let NUM_SAMPLES = 256;
-let musicTimer, musicTimerMax = 10;
+let musicTimer, musicTimerMax = 30;
 let upArrowTimer, rightArrowTimer, leftArrowTimer, downArrowTimer;
 
 let SOUND_1 = 'media/songs/gumball.mp3';
 let SOUND_2 = 'media/songs/Pokemon.mp3';
 let SOUND_3 = 'media/songs/Scooby Doo.mp3';
 let SOUND_4 = 'media/songs/Sponge Bob Square Pants.mp3';
+let SOUND_5 = 'media/songs/Lay it down.mp3';
+let SOUND_6 = 'media/songs/Lover Boy.mp3';
+let SOUND_7 = 'media/songs/Outset Island.mp3';
 
 let track = SOUND_2;
 
@@ -81,34 +84,42 @@ function musicUpdate() {
 
 // draw arrows based on frequency
 function generateArrowsBasedOnMusic(data){
+    let upNum = 3;
+    let downNum = 2;
+    let rightNum = 1;
+    let leftNum = 4;
     //if (musicTimer >= musicTimerMax){
         for (let i = 0; i < data.length; i++) {
             // up arrow settings
-            if (i == 1 && upArrowTimer >= musicTimerMax){
-                if (data[i] > 125 && data[i] < 175){
+            if (i == upNum && upArrowTimer >= musicTimerMax){
+                if (data[i] > 50 && data[i] < 150){
                     createArrow(0);
                     upArrowTimer = 0;
+                    musicTimerMax = (Math.random() * 30 + 1) + 30;
                 }
             }
             // right arrow settings
-            if (i == 0 && rightArrowTimer >= musicTimerMax){
-                if (data[i] > 100 && data[i] < 150){
+            if (i == rightNum && rightArrowTimer >= musicTimerMax){
+                if (data[i] > 50 && data[i] < 150){
                     createArrow(1);
                     rightArrowTimer = 0;
+                    musicTimerMax = (Math.random() * 20) + 20;
                 }
             }
             // down arrow settings
-            if (i == 2 && downArrowTimer >= musicTimerMax){
-                if (data[i] > 100 && data[i] < 150){
+            if (i == downNum && downArrowTimer >= musicTimerMax){
+                if (data[i] > 50 && data[i] < 150){
                     createArrow(2);
                     downArrowTimer = 0;
+                    musicTimerMax = (Math.random() * 20) + 20;
                 }
             }
             // left arrow settings
-            if (i == 3 && leftArrowTimer >= musicTimerMax){
-                if (data[i] > 100 && data[i] < 150){
+            if (i == leftNum && leftArrowTimer >= musicTimerMax){
+                if (data[i] > 50 && data[i] < 150){
                     createArrow(3);
                     leftArrowTimer = 0;
+                    musicTimerMax = (Math.random() * 20) + 20;
                 }
             }
         }

@@ -5,7 +5,7 @@ import { setHealth, getHealth, getMaxHealth } from './gameManager.js'
 import { keysPressed, keysPressedDown } from './input.js';
 export { currentScene, drawStart, startInit, gameInit, drawGame, drawSongSelectScreen, menuScroll, songSelectInit, checkForEscape, createArrow, endInit, drawEnd  }
 
-let currentScene = "start";
+let currentScene = "game";
 let spriteList = [];
 let backgroundSprite;
 let timer;
