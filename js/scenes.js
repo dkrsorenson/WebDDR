@@ -4,7 +4,7 @@ import { getRandomColor } from './utilities.js';
 import { keysPressed, keysPressedDown } from './input.js';
 export { currentScene, drawStart, startInit, gameInit, drawGame, drawSongSelectScreen, menuScroll, songSelectInit }
 
-let currentScene = "start";
+let currentScene = "game";
 let spriteList = [];
 let backgroundSprite;
 let timer;
@@ -24,10 +24,10 @@ let startX = 50;
 let startY = 200;
 
 // variables for arrow locations
-let upArrowY = 240;
+let upArrowY = 220;
+let rightArrowY = 350;
 let downArrowY = 480;
-let rightArrowY = 360;
-let leftArrowY = 600;
+let leftArrowY = 610;
 let upAngle = 0;
 let rightAngle = 90 * Math.PI / 180;
 let downAngle = 180 * Math.PI / 180;
@@ -59,7 +59,6 @@ function drawStart(ctx, screenWidth, screenHeight){
         menuButtons[i].draw(ctx);
     }
     
-    console.log(currentPos);
     menuScroll(menuButtons);
     
     timer++;
@@ -91,12 +90,21 @@ function drawGame(ctx, screenWidth, screenHeight){
     // drawing the static arrows
 	ctx.clearRect(0, 0, screenWidth, screenHeight);
 
+    drawGameText(ctx, screenWidth, screenHeight);
+
+    // drawing in between lines
+    ctx.fillRect(0, upArrowY - 15, screenWidth, 5);
+    ctx.fillRect(0, rightArrowY - 15, screenWidth, 5);
+    ctx.fillRect(0, downArrowY - 15, screenWidth, 5);
+    ctx.fillRect(0, leftArrowY - 15, screenWidth, 5);
+    ctx.fillRect(0, leftArrowY + 110, screenWidth, 5);
+
     for (let s of spriteList){
         s.move();
         s.draw(ctx);
         if (spriteList.indexOf(s) > 3) {
             if (keysPressedDown[s.getKey()]){
-                if (s.checkDistance(60, 20)) {
+                if (s.checkDistance(60, 15)) {
                     s.setPosition(-100, -100);
                 }
             }
@@ -121,6 +129,23 @@ function drawGame(ctx, screenWidth, screenHeight){
 
     if (timer % 30 == 0)
         createRandomArrow();
+}
+
+function drawGameText(ctx, screenWidth, screenHeight, score = "0000000", health = 50){
+    ctx.save();
+    ctx.fillStyle = "black";
+    ctx.font = "40px Anton";
+
+    // score text
+    ctx.fillText("Score:",screenWidth/50,50);
+    ctx.fillText(score,screenWidth/50 + 110,50);
+
+    // Hits text
+    ctx.fillRect(screenWidth / 50, 63, 250, 40); // background of health bar
+    ctx.fillStyle = "red";
+    ctx.fillRect(screenWidth / 50 + 10, 68, (health / 100) * 230, 30); // background of health bar
+
+    ctx.restore()
 }
    
 function songSelectInit(){
@@ -263,7 +288,7 @@ function drawSongSelectScreen(ctx,screenWidth,screenHeight){
     
     ctx.save();
     ctx.fillStyle = "White";
-    ctx.font = "30px Arial";
+    ctx.font = "30px Anton";
     ctx.fillText("Current Song:",screenWidth/2,200);
     ctx.fillText(currentSong.songName,screenWidth/2 + 200,200);
     
