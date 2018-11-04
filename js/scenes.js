@@ -150,9 +150,9 @@ function drawGame(ctx, screenWidth, screenHeight){
     // create random arrows
     timer++;
 
-    // if (timer % 30 == 0) {
-    //     createArrow();
-    // }
+    if (timer % 30 == 0) {
+        createArrow();
+    }
 
     ctx.restore();
 }
