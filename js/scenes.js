@@ -33,6 +33,10 @@ let rightAngle = 90 * Math.PI / 180;
 let downAngle = 180 * Math.PI / 180;
 let leftAngle = 270 * Math.PI / 180;
 
+// variables for game stuff
+let score = 0;
+let timeRemaining = 0;
+
 function startInit(){
     spriteList = [];
     backgroundSprite = createBackgroundSprite();
@@ -81,6 +85,8 @@ function UpdateBackgroundColors(ctx){
 function gameInit(){
     timer = 0;
     spriteList = [];
+    score = 0;
+    timeRemaining = 0;
 
     // goal arrows
     spriteList.push(createArrowSprite(60, upArrowY, "green", 75, 100, upAngle , true));
@@ -109,6 +115,7 @@ function drawGame(ctx, screenWidth, screenHeight){
             if (keysPressedDown[s.getKey()]){
                 if (s.checkDistance(60, 15)) {
                     s.setPosition(-100, -100);
+                    score += 25;
                 }
             }
         }
@@ -130,8 +137,26 @@ function drawGame(ctx, screenWidth, screenHeight){
     // create random arrows
     timer++;
 
-    if (timer % 30 == 0)
+    if (timer % 30 == 0) {
         createRandomArrow();
+    }
+
+    // draw game info 
+    ctx.save();
+    ctx.font = "30px Arial";
+    ctx.fillStyle = "black";
+    
+    // time remaining
+    ctx.fillText("Time Remaining: ", 20, 50, 200);
+    ctx.fillText(timeRemaining, 220, 50, 150);
+
+    // score 
+    ctx.fillText("Score: ", 270, 50, 75);
+    ctx.fillText(score, 350, 50, 150);
+
+
+    ctx.restore();
+
 }
 
 function drawGameText(ctx, screenWidth, screenHeight, score = "0000000", health = 50){
@@ -154,7 +179,7 @@ function drawGameText(ctx, screenWidth, screenHeight, score = "0000000", health 
 function songSelectInit(){
     createSongs();
     for(let s of songs){
-        let newBtn = new ButtonSprite(50,50,"white",s.color,s.color,200,50,s.songName,15);
+        let newBtn = new ButtonSprite(50,50,"white",s.color,s.color,300,60,s.songName,15);
         songButtons.push(newBtn);
     }
 }
@@ -244,7 +269,6 @@ function menuScroll(arr=[]){
 function checkForEscape(){
     // escape key
     if(keysPressed["27"] && !escape){
-        console.log("escaped");
         escape = true;
         if(currentScene == "songSelect"){
             currentScene = "start";
@@ -328,5 +352,11 @@ function drawSongSelectScreen(ctx,screenWidth,screenHeight){
 }
 
 function drawOptionsMenu(){
+    
+}
+
+function resetValues() {
+    timeRemaining = 0;
+    score = 0;
     
 }
