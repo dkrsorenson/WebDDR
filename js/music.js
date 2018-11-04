@@ -4,18 +4,23 @@ export {musicInit, musicUpdate};
 // variables
 let audioElement, analyserNode;
 let NUM_SAMPLES = 256;
-let musicTimer, musicTimerMax = 3000;
+let musicTimer, musicTimerMax = 20000;
 let upArrowTimer, rightArrowTimer, leftArrowTimer, downArrowTimer;
 
-let SOUND_1 = 'media/gumball.mp3';
+let SOUND_1 = 'media/songs/gumball.mp3';
 let SOUND_2 = 'media/songs/Pokemon.mp3';
-let SOUND_3 = 'media/Scooby Doo.mp3';
-let SOUND_4 = 'media/Sponge Bob Square Pants.mp3';
+let SOUND_3 = 'media/songs/Scooby Doo.mp3';
+let SOUND_4 = 'media/songs/Sponge Bob Square Pants.mp3';
 
-let track = SOUND_2;
+let track = SOUND_1;
 
 function musicInit(){
     musicTimer = musicTimerMax;
+    upArrowTimer = musicTimerMax;
+    downArrowTimer = musicTimerMax;
+    leftArrowTimer = musicTimerMax;
+    rightArrowTimer = musicTimerMax;
+
 	// get reference to <audio> element on page
 	audioElement = document.querySelector('audio');
 	
@@ -74,7 +79,7 @@ function musicUpdate() {
 
 // draw arrows based on frequency
 function generateArrowsBasedOnMusic(data){
-    if (musicTimer >= musicTimerMax){
+    //if (musicTimer >= musicTimerMax){
         for (let i = 0; i < data.length; i++) {
             // up arrow settings
             if (i == 1 && upArrowTimer >= musicTimerMax){
@@ -84,27 +89,27 @@ function generateArrowsBasedOnMusic(data){
                 }
             }
             // right arrow settings
-            if (i == 5 && rightArrowTimer >= musicTimerMax){
+            if (i == 0 && rightArrowTimer >= musicTimerMax){
                 if (data[i] > 100 && data[i] < 150){
                     createArrow(1);
                     rightArrowTimer = 0;
                 }
             }
             // down arrow settings
-            if (i == 9 && downArrowTimer >= musicTimerMax){
+            if (i == 2 && downArrowTimer >= musicTimerMax){
                 if (data[i] > 100 && data[i] < 150){
                     createArrow(2);
                     downArrowTimer = 0;
                 }
             }
             // left arrow settings
-            if (i == 13 && leftArrowTimer >= musicTimerMax){
+            if (i == 3 && leftArrowTimer >= musicTimerMax){
                 if (data[i] > 100 && data[i] < 150){
                     createArrow(3);
                     leftArrowTimer = 0;
                 }
             }
-            musicTimer = 0;
         }
-    }
+        //musicTimer = 0;
+    //}
 }
