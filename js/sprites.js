@@ -205,7 +205,7 @@ class ArrowSprite extends Sprite{
 
         // distance check
         if (Math.sqrt((xPoint * xPoint)) < checkDistance) {
-            console.dir(Math.sqrt((xPoint * xPoint)));
+            //console.dir(Math.sqrt((xPoint * xPoint)));
             return true;
         }
         return false;
