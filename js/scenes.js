@@ -4,7 +4,7 @@ import { getRandomColor } from './utilities.js';
 import { keysPressed, keysPressedDown } from './input.js';
 export { currentScene, drawStart, startInit, gameInit, drawGame, drawSongSelectScreen, menuScroll, songSelectInit }
 
-let currentScene = "game";
+let currentScene = "start";
 let spriteList = [];
 let backgroundSprite;
 let timer;
