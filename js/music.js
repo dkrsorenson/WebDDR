@@ -6,6 +6,7 @@ let audioElement, analyserNode;
 let NUM_SAMPLES = 256;
 let musicTimer, musicTimerMax = 10;
 let upArrowTimer, rightArrowTimer, leftArrowTimer, downArrowTimer;
+let playing = false;
 
 let SOUND_1 = 'media/songs/gumball.mp3';
 let SOUND_2 = 'media/songs/Pokemon.mp3';
@@ -26,9 +27,6 @@ function musicInit(){
 	
 	// call our helper function and get an analyser node
 	analyserNode = createAnalyserNode(audioElement);
-     
-	// load and play default sound into audio element
-	playStream(audioElement,track);
 }
 
 function createAnalyserNode(audioElement) {
@@ -62,6 +60,11 @@ function musicUpdate() {
     // this schedules a call to the update() method in 1/60 seconds
     //requestAnimationFrame(musicUpdate);
     
+	// load and play default sound into audio element
+	if(playing == false) {
+        playStream(audioElement,track);
+        playing = true;
+    }
     
     //if(upArrowTimer >= musicTimerMax || rightArrowTimer >= musicTimerMax || leftArrowTimer >= musicTimerMax || downArrowTimer >= musicTimerMax){
         // create a new array of 8-bit integers (0-255)
