@@ -95,6 +95,9 @@ function gameInit(){
 }
 
 function drawGame(ctx, screenWidth, screenHeight){
+    ctx.save();
+    ctx.fillStyle = "black";
+
     // drawing the static arrows
 	ctx.clearRect(0, 0, screenWidth, screenHeight);
 
@@ -162,13 +165,6 @@ function drawGameText(ctx, screenWidth, screenHeight, score){
     // score text
     ctx.fillText("Score:",screenWidth/50,50);
     ctx.fillText(score,screenWidth/50 + 110,50);
-    
-    // drawing in between lines
-    ctx.fillRect(0, upArrowY - 15, screenWidth, 5);
-    ctx.fillRect(0, rightArrowY - 15, screenWidth, 5);
-    ctx.fillRect(0, downArrowY - 15, screenWidth, 5);
-    ctx.fillRect(0, leftArrowY - 15, screenWidth, 5);
-    ctx.fillRect(0, leftArrowY + 110, screenWidth, 5);
 
     // health
     ctx.fillRect(screenWidth / 50, 63, 250, 40); // background of health bar
