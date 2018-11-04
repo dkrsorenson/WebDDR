@@ -117,7 +117,7 @@ function drawGame(ctx, screenWidth, screenHeight){
         if (spriteList.indexOf(s) > 3) {
             // collision and hit check on arrow over goal arrow
             if (keysPressedDown[s.getKey()]){
-                if (s.checkDistance(60, 15)) {
+                if (s.checkDistance(60, 25)) {
                     s.setPosition(-100, -100);
                     score += 25;
                     s.setHit();
