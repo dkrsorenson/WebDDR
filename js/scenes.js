@@ -1,9 +1,9 @@
 import { createArrowSprite, createRectSprite, createBackgroundSprite, ButtonSprite } from './sprites.js'
 import {Song} from './song.js';
 import { getRandomColor } from './utilities.js';
-import { keysPressed, keysPressedDown } from './input.js';
 import { setHealth, getHealth, getMaxHealth } from './gameManager.js'
-export { currentScene, drawStart, startInit, gameInit, drawGame, drawSongSelectScreen, menuScroll, songSelectInit, checkForEscape, endInit, drawEnd }
+import { keysPressed, keysPressedDown } from './input.js';
+export { currentScene, drawStart, startInit, gameInit, drawGame, drawSongSelectScreen, menuScroll, songSelectInit, checkForEscape, createArrow, endInit, drawEnd  }
 
 let currentScene = "end";
 let spriteList = [];
@@ -147,9 +147,11 @@ function drawGame(ctx, screenWidth, screenHeight){
     // create random arrows
     timer++;
 
-    if (timer % 30 == 0) {
-        createRandomArrow();
-    }
+    // if (timer % 30 == 0) {
+    //     createArrow();
+    // }
+
+    ctx.restore();
 }
 
 function drawGameText(ctx, screenWidth, screenHeight, score){
@@ -184,22 +186,21 @@ function songSelectInit(){
     }
 }
 
-function createRandomArrow(){
-    let ranNum = Math.floor(Math.random() * 4);
+function createArrow(num=Math.floor(Math.random() * 4)){
     let spawnX = 1200;
-    if (ranNum == 0){
+    if (num == 0){
         let newSprite = createArrowSprite(spawnX, upArrowY, "white", 75, 100, 0);
         spriteList.push(newSprite);
     }
-    if (ranNum == 1){
+    if (num == 1){
         let newSprite = createArrowSprite(spawnX, rightArrowY, "white", 75, 100, rightAngle);
         spriteList.push(newSprite);
     }
-    if (ranNum == 2){
+    if (num == 2){
         let newSprite = createArrowSprite(spawnX, downArrowY, "white", 75, 100, downAngle);
         spriteList.push(newSprite);
     }
-    if (ranNum == 3){
+    if (num == 3){
         let newSprite = createArrowSprite(spawnX, leftArrowY, "white", 75, 100, leftAngle);
         spriteList.push(newSprite);
     }
