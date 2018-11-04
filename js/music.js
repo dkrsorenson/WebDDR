@@ -4,7 +4,7 @@ export {musicInit, musicUpdate};
 // variables
 let audioElement, analyserNode;
 let NUM_SAMPLES = 256;
-let musicTimer, musicTimerMax = 20000;
+let musicTimer, musicTimerMax = 10;
 let upArrowTimer, rightArrowTimer, leftArrowTimer, downArrowTimer;
 
 let SOUND_1 = 'media/songs/gumball.mp3';
@@ -12,7 +12,7 @@ let SOUND_2 = 'media/songs/Pokemon.mp3';
 let SOUND_3 = 'media/songs/Scooby Doo.mp3';
 let SOUND_4 = 'media/songs/Sponge Bob Square Pants.mp3';
 
-let track = SOUND_3;
+let track = SOUND_2;
 
 function musicInit(){
     musicTimer = musicTimerMax;
@@ -60,15 +60,17 @@ function playStream(audioElement,path){
 
 function musicUpdate() { 
     // this schedules a call to the update() method in 1/60 seconds
-    requestAnimationFrame(musicUpdate);
+    //requestAnimationFrame(musicUpdate);
     
-    // create a new array of 8-bit integers (0-255)
-    let data = new Uint8Array(NUM_SAMPLES/2); 
     
-    // populate the array with the frequency data
-    analyserNode.getByteFrequencyData(data);
+    //if(upArrowTimer >= musicTimerMax || rightArrowTimer >= musicTimerMax || leftArrowTimer >= musicTimerMax || downArrowTimer >= musicTimerMax){
+        // create a new array of 8-bit integers (0-255)
+        let data = new Uint8Array(NUM_SAMPLES/2); 
     
-    //generateArrowsBasedOnMusic(data);
+        // populate the array with the frequency data
+        analyserNode.getByteFrequencyData(data);
+        generateArrowsBasedOnMusic(data);
+    //}
 
     musicTimer++;
     upArrowTimer++;
