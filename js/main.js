@@ -1,4 +1,5 @@
-import {currentScene, drawStart, startInit, gameInit, drawGame,drawSongSelectScreen,menuScroll, songSelectInit, checkForEscape } from './scenes.js';
+import {currentScene, drawStart, startInit, gameInit, drawGame,drawSongSelectScreen,menuScroll, songSelectInit, checkForEscape, endInit, drawEnd } from './scenes.js';
+import { inputCheck } from './input.js';
 export {init};
 
 // variables
@@ -15,6 +16,7 @@ function init(){
     startInit();
     gameInit(ctx);
     songSelectInit();
+    endInit();
 
     // call game loop
     loop();
@@ -36,9 +38,12 @@ function loop(){
         case "game":
             drawGame(ctx, screenWidth, screenHeight);
             break;
+        case "end":
+            drawEnd(ctx, screenWidth, screenHeight);
+            break;
         default:
             break;
     }
     
-    
+    inputCheck();
 }

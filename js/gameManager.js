@@ -1,16 +1,22 @@
-export {  }
+export { setHealth, getHealth, getMaxHealth }
 
 // attributes
-let health = 0;
-let maxHealth = 100;
+let health = 20;
+let maxHealth = 20;
 
-function SetHealth(hp){
+function setHealth(hp){
     health = hp;
     if (health > maxHealth)
         health = maxHealth;
+
+    else if (health < 0)
+        health = 0;
 }
 
-function GetHealth(){
+function getHealth(){
     return health;
 }
 
+function getMaxHealth(){
+    return maxHealth;
+}
