@@ -123,6 +123,7 @@ class ArrowSprite extends Sprite{
 		this.width = width;
         this.height = height;
         this.angle = angle;
+        this.hit = false;
 
         // Setting which key to press
         if (this.angle * (180 / Math.PI) == 0) {
@@ -212,6 +213,14 @@ class ArrowSprite extends Sprite{
 
     getKey(){
         return this.key;
+    }
+
+    setHit(){
+        this.hit = true;
+    }
+
+    getHit(){
+        return this.hit;
     }
 }
 

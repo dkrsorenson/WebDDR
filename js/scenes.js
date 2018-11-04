@@ -2,9 +2,10 @@ import { createArrowSprite, createRectSprite, createBackgroundSprite, ButtonSpri
 import {Song} from './song.js';
 import { getRandomColor } from './utilities.js';
 import { keysPressed, keysPressedDown } from './input.js';
-export { currentScene, drawStart, startInit, gameInit, drawGame, drawSongSelectScreen, menuScroll, songSelectInit, checkForEscape }
+import { setHealth, getHealth, getMaxHealth } from './gameManager.js'
+export { currentScene, drawStart, startInit, gameInit, drawGame, drawSongSelectScreen, menuScroll, songSelectInit, checkForEscape, endInit, drawEnd }
 
-let currentScene = "game";
+let currentScene = "end";
 let spriteList = [];
 let backgroundSprite;
 let timer;
@@ -35,7 +36,6 @@ let leftAngle = 270 * Math.PI / 180;
 
 // variables for game stuff
 let score = 0;
-let timeRemaining = 0;
 
 function startInit(){
     spriteList = [];
@@ -86,7 +86,6 @@ function gameInit(){
     timer = 0;
     spriteList = [];
     score = 0;
-    timeRemaining = 0;
 
     // goal arrows
     spriteList.push(createArrowSprite(60, upArrowY, "green", 75, 100, upAngle , true));
@@ -99,7 +98,7 @@ function drawGame(ctx, screenWidth, screenHeight){
     // drawing the static arrows
 	ctx.clearRect(0, 0, screenWidth, screenHeight);
 
-    drawGameText(ctx, screenWidth, screenHeight);
+    drawGameText(ctx, screenWidth, screenHeight, score, getHealth());
 
     // drawing in between lines
     ctx.fillRect(0, upArrowY - 15, screenWidth, 5);
@@ -108,28 +107,39 @@ function drawGame(ctx, screenWidth, screenHeight){
     ctx.fillRect(0, leftArrowY - 15, screenWidth, 5);
     ctx.fillRect(0, leftArrowY + 110, screenWidth, 5);
 
+    // drawing the arrows
     for (let s of spriteList){
         s.move();
         s.draw(ctx);
         if (spriteList.indexOf(s) > 3) {
+            // collision and hit check on arrow over goal arrow
             if (keysPressedDown[s.getKey()]){
                 if (s.checkDistance(60, 15)) {
                     s.setPosition(-100, -100);
                     score += 25;
+                    s.setHit();
+                    setHealth(getHealth() + 1);
                 }
             }
         }
     }
 
+    // loop through the list of arrows
     for (let i = 0; i < spriteList.length; i++)
     {
+        // if this is the one we are deleting
         if (spriteList[i].x < -50 || spriteList[i].y < -50) {
+            let check = spriteList[i].getHit();
             for (let j = i; j < spriteList.length; j++) {
                 if (j < spriteList.length - 1){
                     spriteList[j] = spriteList[j+1];
                 }
-                else
+                else{
+                    if (!check) {
+                        setHealth(getHealth() - 2);
+                    }
                     spriteList.pop();
+                }
             }
         }
     }
@@ -140,26 +150,9 @@ function drawGame(ctx, screenWidth, screenHeight){
     if (timer % 30 == 0) {
         createRandomArrow();
     }
-
-    // draw game info 
-    ctx.save();
-    ctx.font = "30px Arial";
-    ctx.fillStyle = "black";
-    
-    // time remaining
-    ctx.fillText("Time Remaining: ", 20, 50, 200);
-    ctx.fillText(timeRemaining, 220, 50, 150);
-
-    // score 
-    ctx.fillText("Score: ", 270, 50, 75);
-    ctx.fillText(score, 350, 50, 150);
-
-
-    ctx.restore();
-
 }
 
-function drawGameText(ctx, screenWidth, screenHeight, score = "0000000", health = 50){
+function drawGameText(ctx, screenWidth, screenHeight, score){
     ctx.save();
     ctx.fillStyle = "black";
     ctx.font = "40px Anton";
@@ -167,11 +160,18 @@ function drawGameText(ctx, screenWidth, screenHeight, score = "0000000", health 
     // score text
     ctx.fillText("Score:",screenWidth/50,50);
     ctx.fillText(score,screenWidth/50 + 110,50);
+    
+    // drawing in between lines
+    ctx.fillRect(0, upArrowY - 15, screenWidth, 5);
+    ctx.fillRect(0, rightArrowY - 15, screenWidth, 5);
+    ctx.fillRect(0, downArrowY - 15, screenWidth, 5);
+    ctx.fillRect(0, leftArrowY - 15, screenWidth, 5);
+    ctx.fillRect(0, leftArrowY + 110, screenWidth, 5);
 
-    // Hits text
+    // health
     ctx.fillRect(screenWidth / 50, 63, 250, 40); // background of health bar
     ctx.fillStyle = "red";
-    ctx.fillRect(screenWidth / 50 + 10, 68, (health / 100) * 230, 30); // background of health bar
+    ctx.fillRect(screenWidth / 50 + 10, 68, (getHealth() / getMaxHealth()) * 230, 30); // background of health bar
 
     ctx.restore()
 }
@@ -273,7 +273,7 @@ function checkForEscape(){
         if(currentScene == "songSelect"){
             currentScene = "start";
         }
-        else if(currentScene == "game"){
+        else if(currentScene == "game" || currentScene == "end"){
             currentScene = "start";
         }
     }
@@ -355,8 +355,16 @@ function drawOptionsMenu(){
     
 }
 
+// End functions
+function endInit(){
+
+}
+
+function drawEnd(ctx, screenWidth, screenHeight){
+    
+}
+
 function resetValues() {
-    timeRemaining = 0;
     score = 0;
     
 }
