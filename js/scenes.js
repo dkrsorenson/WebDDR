@@ -2,7 +2,7 @@ import { createArrowSprite, createRectSprite, createBackgroundSprite, ButtonSpri
 import {Song} from './song.js';
 import { getRandomColor } from './utilities.js';
 import { keysPressed, keysPressedDown } from './input.js';
-export { currentScene, drawStart, startInit, gameInit, drawGame, drawSongSelectScreen, menuScroll, songSelectInit, checkForEscape }
+export { currentScene, drawStart, startInit, gameInit, drawGame, drawSongSelectScreen, menuScroll, songSelectInit, checkForEscape, createArrow }
 
 let currentScene = "game";
 let spriteList = [];
@@ -35,7 +35,6 @@ let leftAngle = 270 * Math.PI / 180;
 
 // variables for game stuff
 let score = 0;
-let timeRemaining = 0;
 
 function startInit(){
     spriteList = [];
@@ -86,7 +85,6 @@ function gameInit(){
     timer = 0;
     spriteList = [];
     score = 0;
-    timeRemaining = 0;
 
     // goal arrows
     spriteList.push(createArrowSprite(60, upArrowY, "green", 75, 100, upAngle , true));
@@ -137,23 +135,9 @@ function drawGame(ctx, screenWidth, screenHeight){
     // create random arrows
     timer++;
 
-    if (timer % 30 == 0) {
-        createRandomArrow();
-    }
-
-    // draw game info 
-    ctx.save();
-    ctx.font = "30px Arial";
-    ctx.fillStyle = "black";
-    
-    // time remaining
-    ctx.fillText("Time Remaining: ", 20, 50, 200);
-    ctx.fillText(timeRemaining, 220, 50, 150);
-
-    // score 
-    ctx.fillText("Score: ", 270, 50, 75);
-    ctx.fillText(score, 350, 50, 150);
-
+    // if (timer % 30 == 0) {
+    //     createArrow();
+    // }
 
     ctx.restore();
 
@@ -184,22 +168,21 @@ function songSelectInit(){
     }
 }
 
-function createRandomArrow(){
-    let ranNum = Math.floor(Math.random() * 4);
+function createArrow(num=Math.floor(Math.random() * 4)){
     let spawnX = 1200;
-    if (ranNum == 0){
+    if (num == 0){
         let newSprite = createArrowSprite(spawnX, upArrowY, "white", 75, 100, 0);
         spriteList.push(newSprite);
     }
-    if (ranNum == 1){
+    if (num == 1){
         let newSprite = createArrowSprite(spawnX, rightArrowY, "white", 75, 100, rightAngle);
         spriteList.push(newSprite);
     }
-    if (ranNum == 2){
+    if (num == 2){
         let newSprite = createArrowSprite(spawnX, downArrowY, "white", 75, 100, downAngle);
         spriteList.push(newSprite);
     }
-    if (ranNum == 3){
+    if (num == 3){
         let newSprite = createArrowSprite(spawnX, leftArrowY, "white", 75, 100, leftAngle);
         spriteList.push(newSprite);
     }
@@ -356,7 +339,6 @@ function drawOptionsMenu(){
 }
 
 function resetValues() {
-    timeRemaining = 0;
     score = 0;
     
 }
