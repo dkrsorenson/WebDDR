@@ -5,11 +5,7 @@ import { setHealth, getHealth, getMaxHealth } from './gameManager.js'
 import { keysPressed, keysPressedDown } from './input.js';
 export { currentScene, drawStart, startInit, gameInit, drawGame, drawSongSelectScreen, menuScroll, songSelectInit, checkForEscape, createArrow, endInit, drawEnd  }
 
-<<<<<<< HEAD
 let currentScene = "start";
-=======
-let currentScene = "end";
->>>>>>> d2e6a4f2701e871aaebd1b226bbc04f8fc3e5029
 let spriteList = [];
 let backgroundSprite;
 let timer;
@@ -151,9 +147,9 @@ function drawGame(ctx, screenWidth, screenHeight){
     // create random arrows
     timer++;
 
-    // if (timer % 30 == 0) {
-    //     createArrow();
-    // }
+    if (timer % 30 == 0) {
+        createArrow();
+    }
 
     ctx.restore();
 }

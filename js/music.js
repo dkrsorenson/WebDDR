@@ -12,7 +12,7 @@ let SOUND_2 = 'media/songs/Pokemon.mp3';
 let SOUND_3 = 'media/songs/Scooby Doo.mp3';
 let SOUND_4 = 'media/songs/Sponge Bob Square Pants.mp3';
 
-let track = SOUND_1;
+let track = SOUND_3;
 
 function musicInit(){
     musicTimer = musicTimerMax;
@@ -68,7 +68,7 @@ function musicUpdate() {
     // populate the array with the frequency data
     analyserNode.getByteFrequencyData(data);
     
-    generateArrowsBasedOnMusic(data);
+    //generateArrowsBasedOnMusic(data);
 
     musicTimer++;
     upArrowTimer++;
