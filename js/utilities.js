@@ -1,4 +1,4 @@
-export {getRandomUnitVector, getRandomColor};
+export {getRandomUnitVector, getRandomColor, generateRandColor};
 
 // these 2 helpers are used by classes.js
 function getRandomUnitVector(){
@@ -24,4 +24,12 @@ function getRandom(min, max) {
 function getRandomColor(){
 	const getByte = _ => 55 + Math.round(Math.random() * 200);
 	return `rgba(${getByte()}, ${getByte()}, ${getByte()}, .8`;
+}
+
+function generateRandColor() {
+	var hue = 'rgb(' + (Math.floor(Math.random() * 256)) 
+	+ ',' + (Math.floor(Math.random() * 256)) 
+	+ ',' + (Math.floor(Math.random() * 256)) + ')';
+
+	return hue;
 }

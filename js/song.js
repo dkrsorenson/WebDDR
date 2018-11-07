@@ -1,11 +1,12 @@
 export {Song};
 class Song{
-    constructor(songName, highScore=0, time=0, difficulty = 0, color = "red"){
+    constructor(songName, highScore=0, time=0, difficulty = 0, color = "red", image){
         this.songName = songName;
         this.highScore = highScore;
         this.time = time;
         this.difficulty = difficulty;
         this.color = color;
+        this.image = image;
     }
     
     setHighScore(highScore=0){
