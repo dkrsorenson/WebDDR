@@ -135,15 +135,19 @@ class ArrowSprite extends Sprite{
         // Setting which key to press
         if (this.angle * (180 / Math.PI) == 0) {
             this.key = "38";
+            this.key2= "87";
         }
         if (this.angle * (180 / Math.PI) == 90) {
             this.key = "39";
+            this.key2 = "68";
         }
         if (this.angle * (180 / Math.PI) == 180) {
             this.key = "40";
+            this.key2 = "83";
         }
         if (this.angle * (180 / Math.PI) == 270) {
             this.key = "37";
+            this.key2 = "65"
         }
 	}
 
@@ -158,7 +162,7 @@ class ArrowSprite extends Sprite{
 
         // check to see which color we should be using
         //console.log(this.key + " " + keysPressed[this.key]);
-        if (keysPressed[this.key]){
+        if (keysPressed[this.key] || keysPressed[this.key2]){
             ctx.fillStyle = this.color;
 
         }
@@ -220,6 +224,10 @@ class ArrowSprite extends Sprite{
 
     getKey(){
         return this.key;
+    }
+
+    getKey2(){
+        return this.key2;
     }
 
     setHit(){
