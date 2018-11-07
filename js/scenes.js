@@ -5,7 +5,7 @@ import { setHealth, getHealth, getMaxHealth } from './gameManager.js'
 import { keysPressed, keysPressedDown } from './input.js';
 export { currentScene, drawStart, startInit, gameInit, drawGame, drawSongSelectScreen, menuScroll, songSelectInit, checkForEscape, createArrow, endInit, drawEnd  }
 
-let currentScene = "game";
+let currentScene = "start";
 let spriteList = [];
 let backgroundSprite;
 let timer;
@@ -21,8 +21,6 @@ let up,down,enter,escape;
 
 // variables for start menu
 let menuButtons = [];
-let startX = 50;
-let startY = 200;
 
 // variables for arrow locations
 let upArrowY = 220;
@@ -116,7 +114,7 @@ function drawGame(ctx, screenWidth, screenHeight){
         s.draw(ctx);
         if (spriteList.indexOf(s) > 3) {
             // collision and hit check on arrow over goal arrow
-            if (keysPressedDown[s.getKey()]){
+            if (keysPressedDown[s.getKey()] || keysPressedDown[s.getKey2()]){
                 if (s.checkDistance(60, 25)) {
                     s.setPosition(-100, -100);
                     score += 25;
