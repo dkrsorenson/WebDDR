@@ -1,6 +1,6 @@
 import { getRandomUnitVector } from './utilities.js';
 import { keysPressed } from './input.js'
-export { createArrowSprite, createRectSprite, createBackgroundSprite, ButtonSprite };
+export { createArrowSprite, createRectSprite, createBackgroundSprite, ButtonSprite, ImageSprite };
 
 class Sprite {
     constructor(x=0,y=0,fwd={x:0,y:0},speed=0){
@@ -16,14 +16,14 @@ class Sprite {
     }
 }
 
-class ImageSprite extends Sprite {
-    constructor(x=0,y=0,fwd={x:0,y:0},speed=0,width=100,
-                 height=50,image){
-        super(x,y,fwd,speed);
+class ImageSprite {
+    constructor(x=0,y=0,width=100,height=50,imageSrc){
+        this.x = x;
+        this.y = y;
         this.width = width;
         this.height = height;
         let newImage = new Image();
-        newImage.src = image;
+        newImage.src = imageSrc;
         this.image = newImage;
     }
     
@@ -31,7 +31,13 @@ class ImageSprite extends Sprite {
         ctx.save();
 		ctx.drawImage(this.image,this.x,this.y,this.width,this.height);
 		ctx.restore();
-	}
+    }
+    
+    setRectPos(x=0,y=0){
+        this.x = x;
+        this.y = y;
+    }
+    
 }
 
 class RectSprite extends Sprite{
@@ -51,7 +57,7 @@ class RectSprite extends Sprite{
 }
 
 class ButtonSprite {
-	constructor(x=0,y=0,fillColor="red", strokeColor="white",textColor = "black", width=25,height=25,text="Text",textPadding=0,fontSize=20){
+	constructor(x=0,y=0,fillColor="red", strokeColor="white",textColor = "black", width=25,height=25,text="Text",leftTextPadding=0,fontSize=20,lineWidth=3){
         this.x = x;
         this.y = y;
 		this.fillColor = fillColor;
@@ -61,15 +67,16 @@ class ButtonSprite {
 		this.height = height;
         this.text = text;
         this.radius = 20;
-        this.textPadding = textPadding;
+        this.leftTextPadding = leftTextPadding;
         this.fontSize = fontSize;
+        this.lineWidth = lineWidth;
 	}
 
 	draw(ctx){ 
         ctx.save();
         ctx.fillStyle = this.fillColor;
         ctx.strokeStyle = this.strokeColor;
-        ctx.lineWidth=3;
+        ctx.lineWidth = this.lineWidth;
         ctx.beginPath();
         ctx.moveTo(this.x + this.radius, this.y);
         ctx.lineTo(this.x + this.width - this.radius, this.y);
@@ -84,9 +91,9 @@ class ButtonSprite {
         ctx.fill();
         ctx.stroke();
         
-        ctx.font = this.fontSize + "px Arial";
+        ctx.font = this.fontSize + "px Anton";
         ctx.fillStyle = this.textColor;
-        ctx.fillText(this.text,this.x + this.textPadding,this.y + this.height - this.height/3,this.width - 20);
+        ctx.fillText(this.text,this.x + this.leftTextPadding,this.y + this.height * 0.7,this.width - 20);
         ctx.restore();
         
 	}  
@@ -229,9 +236,9 @@ function createBackgroundSprite(){
     let y = 0;
     let width = 1200;
     let height = 800;
-    let speed = 0;
-    let fwd = {x:0, y:0};
-    let background = new ImageSprite(x,y,fwd,speed,width,height,"media/Background.png");
+    // let speed = 0;
+    // let fwd = {x:0, y:0};
+    let background = new ImageSprite(x,y,width,height,"media/Background.png");
     return background;
 }
 
