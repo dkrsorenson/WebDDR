@@ -4,24 +4,24 @@ export {musicInit, musicUpdate, playBackgroundMusic};
 // variables
 let audioElement, analyserNode;
 let NUM_SAMPLES = 256;
-let musicTimer, musicTimerMax = 10;
+let musicTimerMax = 30;
 let upArrowTimer, rightArrowTimer, leftArrowTimer, downArrowTimer;
 let playing = false;
+let upMusicTimerMax, downMusicTimerMax, rightMusicTimerMax, leftMusicTimerMax;
 
 let backgroundSound = 'media/songs/backgroundmusic.mp3';
 let SOUND_1 = 'media/songs/gumball.mp3';
 let SOUND_2 = 'media/songs/Pokemon.mp3';
 let SOUND_3 = 'media/songs/Scooby Doo.mp3';
 let SOUND_4 = 'media/songs/Sponge Bob Square Pants.mp3';
-
+let SOUND_5 = 'media/songs/Lay it down.mp3';
+let SOUND_6 = 'media/songs/Lover Boy.mp3';
+let SOUND_7 = 'media/songs/Outset Island.mp3';
 let track = backgroundSound;
 
 function musicInit(){
-    musicTimer = musicTimerMax;
-    upArrowTimer = musicTimerMax;
-    downArrowTimer = musicTimerMax;
-    leftArrowTimer = musicTimerMax;
-    rightArrowTimer = musicTimerMax;
+    upMusicTimerMax = downMusicTimerMax = rightMusicTimerMax = leftMusicTimerMax = musicTimerMax;
+    upArrowTimer = downArrowTimer = rightArrowTimer = leftArrowTimer = musicTimerMax;
 
 	// get reference to <audio> element on page
 	audioElement = document.querySelector('audio');
@@ -87,7 +87,6 @@ function musicUpdate() {
         generateArrowsBasedOnMusic(data);
     //}
 
-    musicTimer++;
     upArrowTimer++;
     leftArrowTimer++;
     rightArrowTimer++;
@@ -96,37 +95,43 @@ function musicUpdate() {
 
 // draw arrows based on frequency
 function generateArrowsBasedOnMusic(data){
-    //if (musicTimer >= musicTimerMax){
-        for (let i = 0; i < data.length; i++) {
-            // up arrow settings
-            if (i == 1 && upArrowTimer >= musicTimerMax){
-                if (data[i] > 125 && data[i] < 175){
-                    createArrow(0);
-                    upArrowTimer = 0;
-                }
-            }
-            // right arrow settings
-            if (i == 0 && rightArrowTimer >= musicTimerMax){
-                if (data[i] > 100 && data[i] < 150){
-                    createArrow(1);
-                    rightArrowTimer = 0;
-                }
-            }
-            // down arrow settings
-            if (i == 2 && downArrowTimer >= musicTimerMax){
-                if (data[i] > 100 && data[i] < 150){
-                    createArrow(2);
-                    downArrowTimer = 0;
-                }
-            }
-            // left arrow settings
-            if (i == 3 && leftArrowTimer >= musicTimerMax){
-                if (data[i] > 100 && data[i] < 150){
-                    createArrow(3);
-                    leftArrowTimer = 0;
-                }
+    let upNum = 4;
+    let downNum = 0;
+    let rightNum = 6;
+    let leftNum = 5;
+
+    for (let i = 0; i < data.length; i++) {
+        // up arrow settings
+        if (i == upNum && upArrowTimer >= upMusicTimerMax){
+            if (data[i] > 25 && data[i] < 175){
+                createArrow(0);
+                upArrowTimer = 0;
+                upMusicTimerMax = (Math.random() * 30 + 1) + 30;
             }
         }
-        //musicTimer = 0;
-    //}
+        // right arrow settings
+        if (i == rightNum && rightArrowTimer >= rightMusicTimerMax){
+            if (data[i] > 25 && data[i] < 150){
+                createArrow(1);
+                rightArrowTimer = 0;
+                rightMusicTimerMax = (Math.random() * 30 + 1) + 30;
+            }
+        }
+        // down arrow settings
+        if (i == downNum && downArrowTimer >= downMusicTimerMax){
+            if (data[i] > 25 && data[i] < 175){
+                createArrow(2);
+                downArrowTimer = 0;
+                downMusicTimerMax = (Math.random() * 30 + 1) + 30;
+            }
+        }
+        // left arrow settings
+        if (i == leftNum && leftArrowTimer >= leftMusicTimerMax){
+            if (data[i] > 25 && data[i] < 175){
+                createArrow(3);
+                leftArrowTimer = 0;
+                leftMusicTimerMax = (Math.random() * 30 + 1) + 30;
+            }
+        }
+    }
 }
