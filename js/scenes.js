@@ -1,4 +1,4 @@
-import { createArrowSprite, createRectSprite, createBackgroundSprite, ButtonSprite, ImageSprite } from './sprites.js'
+import { createArrowSprite, createRectSprite, createBackgroundSprite, ButtonSprite, ImageSprite, SpriteSheetSprite } from './sprites.js'
 import {Song} from './song.js';
 import { getRandomColor, generateRandColor } from './utilities.js';
 import { setHealth, getHealth, getMaxHealth } from './gameManager.js'
@@ -38,6 +38,12 @@ let leftAngle = 270 * Math.PI / 180;
 // variables for game stuff
 let score = 0;
 
+// variables for the dancing sprite
+let dancerSprite;
+let danceTimer, danceTimerMax;
+let danceFrame, danceFrameMax;
+let dancerState;
+
 function startInit(){
     spriteList = [];
 
@@ -51,9 +57,22 @@ function startInit(){
     
     menuButtons.push(startButton);
     menuButtons.push(optionsButton);
+
+    danceTimer = 0;
+    danceFrame = 0;
+    danceFrameMax = 52;
+    danceTimerMax = 4;
+    dancerSprite = new SpriteSheetSprite(-50, 100, 500, 500, "media/SpriteSheet.png", danceFrameMax);
+    dancerState = "";
 }
 
 function drawStart(ctx, screenWidth, screenHeight){
+    if (dancerState != currentScene){
+        dancerSprite.SetPosition(-50, 100);
+        dancerSprite.SetScale(1, 1);
+        dancerState = currentScene;
+    }
+
     let yIncrement = -100;
     // draw background
     drawBackgroundImage(ctx);
@@ -72,8 +91,22 @@ function drawStart(ctx, screenWidth, screenHeight){
     }
     
     menuScroll(menuButtons);
+
+    dancerSprite.draw(ctx, danceFrame);
     
-    timer++;
+    timer++;    
+    DancerUpdate();
+}
+
+function DancerUpdate(){
+    danceTimer++;
+    if (danceTimer > danceTimerMax) {
+        danceTimer = 0;
+        danceFrame++;
+        if (danceFrame > danceFrameMax - 1){
+            danceFrame = 0;
+        }
+    }
 }
 
 function drawTitle(ctx,screenWidth,screenHeight){
@@ -114,6 +147,14 @@ function gameInit(){
 }
 
 function drawGame(ctx, screenWidth, screenHeight){
+    console.dir(dancerState);
+    if (dancerState != currentScene){
+        console.dir("HIT");
+        dancerSprite.SetPosition(450, -20);
+        dancerSprite.SetScale(2, 2);
+        dancerState = currentScene;
+    }
+
     ctx.save();
     ctx.fillStyle = "black";
 
@@ -165,14 +206,12 @@ function drawGame(ctx, screenWidth, screenHeight){
             }
         }
     }
-    
-    // create random arrows
+
+    dancerSprite.draw(ctx, danceFrame);
+
     timer++;
-
-    // if (timer % 30 == 0) {
-    //     createArrow();
-    // }
-
+    DancerUpdate();
+    
     ctx.restore();
 }
 
