@@ -1,13 +1,15 @@
-import {createArrow} from './scenes.js';
-export {musicInit, musicUpdate};
+import {createArrow,currentSong} from './scenes.js';
+export {musicInit, musicUpdate, playBackgroundMusic};
 
 // variables
 let audioElement, analyserNode;
 let NUM_SAMPLES = 256;
 let musicTimerMax = 30;
 let upArrowTimer, rightArrowTimer, leftArrowTimer, downArrowTimer;
+let playing = false;
 let upMusicTimerMax, downMusicTimerMax, rightMusicTimerMax, leftMusicTimerMax;
 
+let backgroundSound = 'media/songs/backgroundmusic.mp3';
 let SOUND_1 = 'media/songs/gumball.mp3';
 let SOUND_2 = 'media/songs/Pokemon.mp3';
 let SOUND_3 = 'media/songs/Scooby Doo.mp3';
@@ -15,8 +17,7 @@ let SOUND_4 = 'media/songs/Sponge Bob Square Pants.mp3';
 let SOUND_5 = 'media/songs/Lay it down.mp3';
 let SOUND_6 = 'media/songs/Lover Boy.mp3';
 let SOUND_7 = 'media/songs/Outset Island.mp3';
-
-let track = SOUND_3;
+let track = backgroundSound;
 
 function musicInit(){
     upMusicTimerMax = downMusicTimerMax = rightMusicTimerMax = leftMusicTimerMax = musicTimerMax;
@@ -27,9 +28,6 @@ function musicInit(){
 	
 	// call our helper function and get an analyser node
 	analyserNode = createAnalyserNode(audioElement);
-     
-	// load and play default sound into audio element
-	playStream(audioElement,track);
 }
 
 function createAnalyserNode(audioElement) {
@@ -55,14 +53,30 @@ function createAnalyserNode(audioElement) {
 
 function playStream(audioElement,path){
     audioElement.src = path;
+    audioElement.addEventListener('ended', function() {
+        this.currentTime = 0;
+        this.play();
+    }, false);
     audioElement.play();
     audioElement.volume = 0.3;
+}
+
+function playBackgroundMusic() {
+    if(playing == false){
+        playStream(audioElement,backgroundSound);
+    } 
 }
 
 function musicUpdate() { 
     // this schedules a call to the update() method in 1/60 seconds
     //requestAnimationFrame(musicUpdate);
     
+	// load and play default sound into audio element
+	if(playing == false) {
+        track = 'media/songs/' + currentSong.songName + '.mp3';
+        playStream(audioElement,track);
+        playing = true;
+    }
     
     //if(upArrowTimer >= musicTimerMax || rightArrowTimer >= musicTimerMax || leftArrowTimer >= musicTimerMax || downArrowTimer >= musicTimerMax){
         // create a new array of 8-bit integers (0-255)

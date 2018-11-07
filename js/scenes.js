@@ -1,9 +1,10 @@
-import { createArrowSprite, createRectSprite, createBackgroundSprite, ButtonSprite } from './sprites.js'
+import { createArrowSprite, createRectSprite, createBackgroundSprite, ButtonSprite, ImageSprite } from './sprites.js'
 import {Song} from './song.js';
-import { getRandomColor } from './utilities.js';
+import { getRandomColor, generateRandColor } from './utilities.js';
 import { setHealth, getHealth, getMaxHealth } from './gameManager.js'
 import { keysPressed, keysPressedDown } from './input.js';
-export { currentScene, drawStart, startInit, gameInit, drawGame, drawSongSelectScreen, menuScroll, songSelectInit, checkForEscape, createArrow, endInit, drawEnd  }
+export { currentScene, drawStart, startInit, gameInit, drawGame, drawSongSelectScreen, menuScroll, 
+         songSelectInit, checkForEscape, createArrow, endInit, drawEnd, currentSong  }
 
 let currentScene = "start";
 let spriteList = [];
@@ -41,8 +42,8 @@ function startInit(){
     timer = 0;   
     
     // buttons
-    let startButton = new ButtonSprite(50,300,"cornflowerblue","navy","black",250,70,"Start",90,30);
-    let optionsButton = new ButtonSprite(50,270,"cornflowerblue","navy","black",250,70,"Options",70,30);
+    let startButton = new ButtonSprite(50,300,"cornflowerblue","navy","black",250,70,"Start",90,35);
+    let optionsButton = new ButtonSprite(50,270,"cornflowerblue","navy","black",250,70,"Options",70,35);
     
     menuButtons.push(startButton);
     menuButtons.push(optionsButton);
@@ -174,8 +175,9 @@ function drawGameText(ctx, screenWidth, screenHeight, score){
    
 function songSelectInit(){
     createSongs();
+
     for(let s of songs){
-        let newBtn = new ButtonSprite(50,50,"white",s.color,s.color,300,60,s.songName,15);
+        let newBtn = new ButtonSprite(50,50,"white",s.color,s.color,350,70,s.songName,20,25);
         songButtons.push(newBtn);
     }
 }
@@ -201,21 +203,17 @@ function createArrow(num=Math.floor(Math.random() * 4)){
 }
 
 function createSongs(){
-    let s1 = new Song("song 1", 0, 10, 1,"red");
-    let s2 = new Song("song 2", 0, 15, 2,"orange");
-    let s3 = new Song("song 3", 0, 20, 3,"gold");
-    let s4 = new Song("song 4", 0, 25, 4,"green");
-    let s5 = new Song("song 5", 0, 30, 5,"blue");
-    let s6 = new Song("song 6", 0, 25, 4,"purple");
-    let s7 = new Song("song 7", 0, 30, 5,"violet");
-    
-    songs.push(s1);
-    songs.push(s2);
-    songs.push(s3);
-    songs.push(s4);
-    songs.push(s5);
-    songs.push(s6);
-    songs.push(s7);
+
+    let arrSongNames = [ "gumball", "Pokemon", "Scooby Doo", "Sponge Bob Square Pants", "Blank1", "Blank2", "Blank3"];
+
+    for (let i = 0; i < arrSongNames.length; i++){
+        let imageSrc = "media/songcovers/" + arrSongNames[i] + ".jpg";
+        let imgSprite = new ImageSprite(0,0,300,300,imageSrc);
+
+        let s = new Song(arrSongNames[i],0,0,0,"red",imgSprite);
+        songs.push(s);
+    }
+
 }
 
 function menuScroll(arr=[]){
@@ -252,7 +250,7 @@ function menuScroll(arr=[]){
             }
         }
         else if(currentScene == "songSelect"){
-            //currentSong = arr[currentPos].getName();
+            //currentSong = songs[currentPos].songName;
             currentScene = "game";
         }
     }
@@ -286,6 +284,9 @@ function drawSongSelectScreen(ctx,screenWidth,screenHeight){
     
     let btnNum = currentPos;
     drawPos = -2;
+    
+    
+
     for(let i = 0; i < songButtons.length; i++){   
         if(btnNum > songButtons.length - 1){
             btnNum = 0;
@@ -297,53 +298,73 @@ function drawSongSelectScreen(ctx,screenWidth,screenHeight){
         }
         else if(drawPos == 1){
             x = 45;
-            y = screenHeight/2 + 70;
+            y = screenHeight/2 + 85;
         }
         else if(drawPos == 2){
             x = 15;
-            y = screenHeight/2 + 140;
+            y = screenHeight/2 + 170;
         }
         else if(drawPos == -2){
             x = 15;
-            y = screenHeight/2 - 140;
+            y = screenHeight/2 - 170;
         }
         else if(drawPos == -1){
             x = 45;
-            y = screenHeight/2 - 70;
+            y = screenHeight/2 - 85;
         }
         
         if(drawPos <= 2){
+            if(drawPos == 0) songButtons[btnNum].setFillColor("gold");
+            else songButtons[btnNum].setFillColor("white");
             songButtons[btnNum].setRectPos(x,y);
             songButtons[btnNum].draw(ctx);
             drawPos++;
             btnNum++;
         }
     }
-    
+
+    // // draw around the center position 
+    // let centerButton = new ButtonSprite(75,screenHeight/2 - 5,"none","gold","black",380,75,"",0,0,10);
+    // centerButton.draw(ctx);
+    // ctx.restore();
+
     let tempPos = currentPos; 
     tempPos += 2;
     currentSong = songs[tempPos % songButtons.length];
     
+    drawSongSelectText(ctx,screenWidth,screenHeight);
+}
+
+function drawSongSelectText(ctx,screenWidth,screenHeight) {
+    ctx.save();
+    ctx.fillStyle = "black";
+    ctx.font = "70px Anton";
+    ctx.fillText("Select a song:",screenWidth/50,100);
+    ctx.restore();
+
     // info
     ctx.save();
     ctx.fillStyle = "black";
     ctx.font = "30px Anton";
-    ctx.fillText("Current Song:",screenWidth/2,screenHeight/2 - 100);  
-    ctx.fillText("Time:",screenWidth/2,screenHeight/2 - 50);
-    ctx.fillText("High Score:",screenWidth/2,screenHeight/2);
-    ctx.fillText("Difficulty:",screenWidth/2,screenHeight/2 + 50);
+    ctx.fillText("Current Song:",screenWidth/2,screenHeight/2 + 50);  
+    ctx.fillText("Time:",screenWidth/2,screenHeight/2 + 100);
+    ctx.fillText("High Score:",screenWidth/2,screenHeight/2 + 150);
+    ctx.fillText("Difficulty:",screenWidth/2,screenHeight/2 + 200);
     ctx.restore();
     
     // draw current song data
     ctx.save();
+    let img = currentSong.image;
+    img.setRectPos(screenWidth/2 + 75, screenHeight/2 - img.height);
+    img.draw(ctx);
+
     ctx.fillStyle = currentSong.color;
-    ctx.font = "30px Arial";
-    ctx.fillText(currentSong.songName,screenWidth/2 + 200,screenHeight/2 - 100);
-    ctx.fillText(currentSong.time,screenWidth/2 + 90,screenHeight/2 - 50);
-    ctx.fillText(currentSong.highScore,screenWidth/2 + 170,screenHeight/2);
-    ctx.fillText(currentSong.difficulty,screenWidth/2 + 130,screenHeight/2 + 50);
+    ctx.font = "30px Anton";
+    ctx.fillText(currentSong.songName,screenWidth/2 + 175,screenHeight/2 + 50);
+    ctx.fillText(currentSong.time,screenWidth/2 + 75,screenHeight/2 + 100);
+    ctx.fillText(currentSong.highScore,screenWidth/2 + 150,screenHeight/2 + 150);
+    ctx.fillText(currentSong.difficulty,screenWidth/2 + 125,screenHeight/2 + 200);
     ctx.restore();
-    
 }
 
 function drawOptionsMenu(){
