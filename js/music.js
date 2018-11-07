@@ -1,22 +1,15 @@
 import {createArrow,currentSong} from './scenes.js';
-export {musicInit, musicUpdate, playBackgroundMusic};
+export {musicInit, musicUpdate, playBackgroundMusic };
 
 // variables
 let audioElement, analyserNode;
 let NUM_SAMPLES = 256;
 let musicTimerMax = 30;
 let upArrowTimer, rightArrowTimer, leftArrowTimer, downArrowTimer;
-let playing = false;
+let playing = false, songOver = false;
 let upMusicTimerMax, downMusicTimerMax, rightMusicTimerMax, leftMusicTimerMax;
 
 let backgroundSound = 'media/songs/backgroundmusic.mp3';
-let SOUND_1 = 'media/songs/gumball.mp3';
-let SOUND_2 = 'media/songs/Pokemon.mp3';
-let SOUND_3 = 'media/songs/Scooby Doo.mp3';
-let SOUND_4 = 'media/songs/Sponge Bob Square Pants.mp3';
-let SOUND_5 = 'media/songs/Lay it down.mp3';
-let SOUND_6 = 'media/songs/Lover Boy.mp3';
-let SOUND_7 = 'media/songs/Outset Island.mp3';
 let track = backgroundSound;
 
 function musicInit(){
@@ -53,10 +46,18 @@ function createAnalyserNode(audioElement) {
 
 function playStream(audioElement,path){
     audioElement.src = path;
-    audioElement.addEventListener('ended', function() {
-        this.currentTime = 0;
-        this.play();
-    }, false);
+    if(path == backgroundSound){
+        audioElement.addEventListener('ended', function() {
+            this.currentTime = 0;
+            this.play();
+        }, false);
+    }
+    else {
+        audioElement.addEventListener('ended', function() {
+            songOver = true;
+            playing = false;
+        }, false);
+    }
     audioElement.play();
     audioElement.volume = 0.3;
 }
@@ -68,11 +69,8 @@ function playBackgroundMusic() {
 }
 
 function musicUpdate() { 
-    // this schedules a call to the update() method in 1/60 seconds
-    //requestAnimationFrame(musicUpdate);
-    
 	// load and play default sound into audio element
-	if(playing == false) {
+	if(playing == false && songOver == false) {
         track = 'media/songs/' + currentSong.songName + '.mp3';
         playStream(audioElement,track);
         playing = true;
