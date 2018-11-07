@@ -1,6 +1,6 @@
 import { getRandomUnitVector } from './utilities.js';
 import { keysPressed } from './input.js'
-export { createArrowSprite, createRectSprite, createBackgroundSprite, ButtonSprite, ImageSprite };
+export { createArrowSprite, createRectSprite, createBackgroundSprite, ButtonSprite, ImageSprite, SpriteSheetSprite };
 
 class Sprite {
     constructor(x=0,y=0,fwd={x:0,y:0},speed=0){
@@ -38,6 +38,40 @@ class ImageSprite {
         this.y = y;
     }
     
+}
+
+class SpriteSheetSprite extends ImageSprite{
+    constructor(x=0,y=0,width=500,height=500,imageSrc,frameCount){
+        super(x, y, width, height, imageSrc);
+        this.frameCount = frameCount;
+        this.scaleFactor = {x: 1, y: 1};
+    }
+
+    draw(ctx, frame = 0){
+        ctx.save();
+        ctx.drawImage(
+            this.image,
+            frame * this.width, // image x
+            0, // image y
+            this.width,
+            this.height,
+            this.x,
+            this.y,
+            this.width / this.scaleFactor.x,
+            this.height / this.scaleFactor.y
+        );
+        ctx.restore();
+    }
+
+    SetPosition(x, y){
+       this.x = x;
+       this.y = y;
+    }
+
+    SetScale(x, y){
+        this.scaleFactor.x = x;
+        this.scaleFactor.y = y;
+    }
 }
 
 class RectSprite extends Sprite{
