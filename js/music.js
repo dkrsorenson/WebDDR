@@ -1,5 +1,5 @@
-import {createArrow} from './scenes.js';
-export {musicInit, musicUpdate};
+import {createArrow,currentSong} from './scenes.js';
+export {musicInit, musicUpdate, playBackgroundMusic};
 
 // variables
 let audioElement, analyserNode;
@@ -8,12 +8,13 @@ let musicTimer, musicTimerMax = 10;
 let upArrowTimer, rightArrowTimer, leftArrowTimer, downArrowTimer;
 let playing = false;
 
+let backgroundSound = 'media/songs/backgroundmusic.mp3';
 let SOUND_1 = 'media/songs/gumball.mp3';
 let SOUND_2 = 'media/songs/Pokemon.mp3';
 let SOUND_3 = 'media/songs/Scooby Doo.mp3';
 let SOUND_4 = 'media/songs/Sponge Bob Square Pants.mp3';
 
-let track = SOUND_2;
+let track = backgroundSound;
 
 function musicInit(){
     musicTimer = musicTimerMax;
@@ -52,8 +53,18 @@ function createAnalyserNode(audioElement) {
 
 function playStream(audioElement,path){
     audioElement.src = path;
+    audioElement.addEventListener('ended', function() {
+        this.currentTime = 0;
+        this.play();
+    }, false);
     audioElement.play();
     audioElement.volume = 0.3;
+}
+
+function playBackgroundMusic() {
+    if(playing == false){
+        playStream(audioElement,backgroundSound);
+    } 
 }
 
 function musicUpdate() { 
@@ -62,6 +73,7 @@ function musicUpdate() {
     
 	// load and play default sound into audio element
 	if(playing == false) {
+        track = 'media/songs/' + currentSong.songName + '.mp3';
         playStream(audioElement,track);
         playing = true;
     }
