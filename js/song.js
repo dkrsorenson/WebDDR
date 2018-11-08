@@ -12,4 +12,8 @@ class Song{
     setHighScore(highScore=0){
         this.highScore = highScore;
     }
+
+    setDifficulty(diff=""){
+        
+    }
 }
