@@ -323,14 +323,19 @@ function createArrow(num=Math.floor(Math.random() * 4)){
 function createSongs(){
     let arrSongNames = [ "Aint No Mountain High Enough", "Lay it down", "Lover Boy", "Outset Island", "Pokemon", 
                          "Scooby Doo", "Spongebob Square Pants"];
-
+    let difficulty = "Easy";
     for (let i = 0; i < arrSongNames.length; i++){
         let imageSrc = "media/songcovers/" + arrSongNames[i] + ".jpg";
         let imgSprite = new ImageSprite(0,0,300,300,imageSrc);
 
-        let s = new Song(arrSongNames[i],0,0,0,"navy",imgSprite);
+        if(i < 3) difficulty = "Hard";
+        else if (i > 2 && i < 5) difficulty = "Medium";
+        else if(i > 4 && i < arrSongNames.length) difficulty = "Easy";
+
+        let s = new Song(arrSongNames[i],0,0,difficulty,"navy",imgSprite);
         songs.push(s);
     }
+
 }
 
 // the easy keypress menu scrolling
