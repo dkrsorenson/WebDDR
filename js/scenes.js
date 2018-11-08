@@ -153,6 +153,8 @@ function drawGame(ctx, screenWidth, screenHeight){
         dancerSprite.SetPosition(450, -20);
         dancerSprite.SetScale(2, 2);
         dancerState = currentScene;
+        setHealth(getMaxHealth());
+        spriteList = [];
     }
 
     ctx.save();
@@ -474,5 +476,4 @@ function drawEnd(ctx, screenWidth, screenHeight){
 
 function resetValues() {
     score = 0;
-    
 }
