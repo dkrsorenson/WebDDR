@@ -1,6 +1,6 @@
 import { getRandomUnitVector } from './utilities.js';
 import { keysPressed } from './input.js'
-export { createArrowSprite, createRectSprite, createBackgroundSprite, ButtonSprite, ImageSprite, SpriteSheetSprite, TextSprite };
+export { createArrowSprite, createRectSprite, createBackgroundSprite, ButtonSprite, ImageSprite, SpriteSheetSprite, TextSprite, SliderSprite };
 
 // sprite base class
 class Sprite {
@@ -81,7 +81,8 @@ class SpriteSheetSprite extends ImageSprite{
 
 // button sprite class
 class ButtonSprite {
-	constructor(x=0,y=0,fillColor="red", strokeColor="white",textColor = "black", width=25,height=25,text="Text",leftTextPadding=0,fontSize=20,lineWidth=3){
+    constructor(x=0,y=0,fillColor="red", strokeColor="white",textColor = "black", width=25,
+                height=25,text="Text",leftTextPadding=0,fontSize=20,lineWidth=3){
         this.x = x;
         this.y = y;
 		this.fillColor = fillColor;
@@ -293,9 +294,10 @@ class TextSprite extends Sprite{
         
         ctx.globalAlpha = this.alpha;
 
+        ctx.beginPath();
         // drawing the text
         ctx.fillText(this.text,this.x,this.y);
-
+        ctx.closePath();
         ctx.fill();
         ctx.stroke();
 		ctx.restore();
@@ -345,4 +347,75 @@ function createRectSprite(x=0, y=0,color="red",width=50,height=50){
 function createArrowSprite(x=0,y=0, color="white", width=50, height=75, angle=0, freeze){
     let arrow = new ArrowSprite(x,y,color,width,height,angle, freeze);
     return arrow;
+}
+
+class SliderSprite {
+    constructor(x=0,y=0,circleX=0,fillColor="cornflowerblue", strokeColor="black",textColor="black",text="Text",fontSize=20,lineWidth=3, value=100){
+        this.x = x;
+        this.y = y;
+        this.circleX = circleX;
+		this.fillColor = fillColor;
+        this.strokeColor = strokeColor;
+        this.textColor = textColor;
+        this.text = text;
+        this.radius = 20;
+        this.fontSize = fontSize;
+        this.lineWidth = lineWidth;
+        this.value = value;
+	}
+
+	draw(ctx){ 
+        ctx.save();
+        ctx.fillStyle = this.fillColor;
+        ctx.strokeStyle = this.strokeColor;
+        ctx.lineWidth = this.lineWidth;
+        // draw line
+        ctx.beginPath();
+        ctx.moveTo(this.x, this.y);
+        ctx.lineTo(this.x + 200, this.y);
+        ctx.closePath();
+        ctx.stroke();
+
+        // draw circle
+        ctx.beginPath();
+        ctx.arc(this.circleX,this.y,this.radius,0,Math.PI * 2,false);
+        ctx.closePath();
+        ctx.fill();
+        
+        ctx.font = this.fontSize + "px Anton";
+        ctx.fillStyle = this.textColor;
+        ctx.fillText(this.text,this.x - 100,this.y + 10);
+        ctx.restore();
+        
+	}  
+    
+    setRectPos(x=0,y=0){
+        this.x = x;
+        this.y = y;
+    }
+
+    moveSliderRight(){
+        this.circleX += 20;
+    }
+
+    moveSliderLeft(){
+        this.circleX -= 20;
+    }
+
+    addValue(){
+        this.value += 10;
+    }
+
+    reduceValue(){
+        this.value -= 10;
+    }
+    
+    setFillColor(fillColor="red"){
+        this.fillColor = fillColor;
+    }
+    
+    getName(){
+        return this.text;
+    }
+    
 }

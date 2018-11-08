@@ -1,13 +1,13 @@
-import { createArrowSprite, createRectSprite, createBackgroundSprite, ButtonSprite, ImageSprite, SpriteSheetSprite } from './sprites.js'
+import { createArrowSprite, createRectSprite, createBackgroundSprite, ButtonSprite, ImageSprite, SpriteSheetSprite, SliderSprite } from './sprites.js'
 import { Song } from './song.js';
 import { getRandomColor, generateRandColor } from './utilities.js';
 import { setHealth, getHealth, getMaxHealth } from './gameManager.js';
 import { keysPressed, keysPressedDown } from './input.js';
 import { createHitText, textUpdate } from './hitChecker.js';
 import { songOver, playBackgroundMusic, resetMusic } from './music.js';
-
 export { currentScene, drawStart, startInit, gameInit, drawGame, drawSongSelectScreen, menuScroll, 
-         songSelectInit, checkForEscape, createArrow, endInit, drawEnd, currentSong, resetValues  }
+         songSelectInit, checkForEscape, createArrow, endInit, drawEnd, currentSong, resetValues, 
+         drawOptionsMenu, optionsInit, volume  }
 
 let currentScene = "start";
 let spriteList = [];
@@ -21,7 +21,7 @@ let currentSong;
 
 // menu scroll stuff
 let currentPos = 0;
-let up,down,enter,escape;
+let up,down,left,right,enter,escape;
 
 // variables for start menu
 let menuButtons = [];
@@ -46,6 +46,10 @@ let dancerSprite;
 let danceTimer, danceTimerMax;
 let danceFrame, danceFrameMax;
 let dancerState;
+
+// variables for options menu
+let volume = 100;
+let sliders = [];
 
 function startInit(){
     spriteList = [];
@@ -342,6 +346,9 @@ function menuScroll(arr=[]){
             if(arr[currentPos].getName() == "Start"){
                 currentScene = "songSelect";
             }
+            else if(arr[currentPos].getName() == "Options"){
+                currentScene = "options";
+            }
         }
         else if(currentScene == "songSelect"){
             //currentSong = songs[currentPos].songName;
@@ -361,7 +368,7 @@ function checkForEscape(){
     // escape key
     if(keysPressed["27"] && !escape){
         escape = true;
-        if(currentScene == "songSelect"){
+        if(currentScene == "songSelect" || currentScene == "options"){
             currentScene = "start";
         }
         else if(currentScene == "game" || currentScene == "end"){
@@ -459,8 +466,64 @@ function drawSongSelectText(ctx,screenWidth,screenHeight) {
     img.draw(ctx);
 }
 
-function drawOptionsMenu(){
+function optionsInit(){
+    let volumeSlider = new SliderSprite(300,200,500,"cornflowerblue","black","black","Volume",30,5,100);
+
+    sliders.push(volumeSlider);
+}
+
+function drawOptionsMenu(ctx,screenWidth,screenHeight){
+    menuScroll(sliders);
+    sliderScroll();
+    // empty screen
+    ctx.save();
+    ctx.fillStyle = "white";
+    ctx.fillRect(0,0,screenWidth,screenHeight);
+    ctx.restore();
+
+    // draw bg image
+    drawBackgroundImage(ctx);
+
+    // draw end game text
+    ctx.save();
+    ctx.fillStyle = "black";
+    ctx.fillStyle = "black";
+    ctx.font = "70px Anton";
+    ctx.fillText("Options:",screenWidth/50,100);
+
+    for(let s of sliders){
+        s.draw(ctx);
+    }
     
+
+    ctx.font = "20px Anton";
+    ctx.fillText("Press [Esc] to return to main menu.", screenWidth/2 - 150,screenHeight/2 + 150);
+    ctx.restore();
+}
+
+function sliderScroll(){
+    // left key
+    if(keysPressed["37"] && !down){
+        left = true;
+        if(sliders[currentPos].value > 0) {
+            sliders[currentPos].reduceValue();
+            sliders[currentPos].moveLeft();
+        }
+    }
+    else if(!keysPressed["37"] && down){
+        left = false;
+    }
+    // right key
+    if(keysPressed["39"] && !down){
+        right = true;
+        if(sliders[currentPos].value <= 100) {
+            sliders[currentPos].addValue();
+            sliders[currentPos].moveRight();
+        }
+    }
+    else if(!keysPressed["39"] && down){
+        right = false;
+    }
 }
 
 // End functions
@@ -486,8 +549,8 @@ function drawEnd(ctx, screenWidth, screenHeight){
     ctx.fillText("Game Over",screenWidth/2 - 250, screenHeight/2 - 100);
 
     ctx.font = "30px Anton";
-    ctx.fillText("Song: " + currentSong.songName, screenWidth/2 - 100,screenHeight/2 - 50);
-    ctx.fillText("High Score: " + currentSong.highScore, screenWidth/2 - 100,screenHeight/2);
+    ctx.fillText("Song: " + currentSong.songName, screenWidth/2 - (currentSong.songName.length/2)*15,screenHeight/2 - 50);
+    ctx.fillText("High Score: " + currentSong.highScore, screenWidth/2 - 70,screenHeight/2);
 
     ctx.font = "20px Anton";
     ctx.fillText("Press [Enter] to return to main menu.", screenWidth/2 - 150,screenHeight/2 + 150);
