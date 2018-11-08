@@ -534,26 +534,28 @@ function drawOptionsMenu(ctx,screenWidth,screenHeight){
 
 function sliderScroll(){
     // left key
-    if(keysPressed["37"] && !down){
-        left = true;
-        if(sliders[currentPos].value > 0) {
-            sliders[currentPos].reduceValue();
-            sliders[currentPos].moveLeft();
+    for (let s of sliders){
+        if(keysPressed["37"] && !down){
+            left = true;
+            if(s.getValue() > 0) {
+                s.reduceValue();
+                s.moveSliderLeft();
+            }
         }
-    }
-    else if(!keysPressed["37"] && down){
-        left = false;
-    }
-    // right key
-    if(keysPressed["39"] && !down){
-        right = true;
-        if(sliders[currentPos].value <= 100) {
-            sliders[currentPos].addValue();
-            sliders[currentPos].moveRight();
+        else if(!keysPressed["37"] && down){
+            left = false;
         }
-    }
-    else if(!keysPressed["39"] && down){
-        right = false;
+        // right key
+        if(keysPressed["39"] && !down){
+            right = true;
+            if(s.getValue() <= 100) {
+                s.addValue();
+                s.moveSliderRight();
+            }
+        }
+        else if(!keysPressed["39"] && down){
+            right = false;
+       }   
     }
 }
 
