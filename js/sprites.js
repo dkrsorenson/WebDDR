@@ -415,5 +415,9 @@ class SliderSprite {
     getName(){
         return this.text;
     }
+
+    getValue(){
+        return this.value;
+    }
     
 }
