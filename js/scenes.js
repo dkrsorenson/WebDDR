@@ -101,8 +101,13 @@ function drawStart(ctx, screenWidth, screenHeight){
     dancerSprite.draw(ctx, danceFrame);
     
     ctx.save();
-    ctx.font = "30px Anton";
+    ctx.font = "50px Anton";
     ctx.fillStyle = "navy";
+    ctx.fillText("How To Play", screenWidth / 2 - 115, screenHeight - 250);
+    ctx.font = "25px Anton";
+    ctx.fillText("Use arrow keys to navigate menus, enter to select, escape to go back", 260, screenHeight - 200);
+    ctx.fillText("Use arrow keys or WASD to play in game, escape to return to menu", 285, screenHeight - 160);
+    ctx.font = "30px Anton";
     ctx.fillText("Dakota Sorenson", 15, screenHeight - 15);
     ctx.fillText("Coehl Gleckner", screenWidth - 200, screenHeight - 15);
     ctx.restore();
