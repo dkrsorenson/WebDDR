@@ -190,7 +190,6 @@ class ArrowSprite extends Sprite{
         // check to see which color we should be using
         if ((keysPressed[this.key] || keysPressed[this.key2]) && this.freeze){
             ctx.fillStyle = this.color;
-
         }
         else {
             ctx.fillStyle = "white";
@@ -277,7 +276,6 @@ class TextSprite extends Sprite{
     // draw method
 	draw(ctx){
         ctx.save();
-
         // setting line size
         ctx.font = "30px Anton";
         ctx.lineWidth = 5;

@@ -1,6 +1,6 @@
 export {keysPressed, keysPressedDown, inputCheck}
 
-// user Input
+// user Input, with Daemons
 let keysPressed = {};
 let keysPressedDown = {};
 let timer;
@@ -20,6 +20,7 @@ document.addEventListener("keyup", function(e) {
     keysPressedDown[e.keyCode] = false;
 });
 
+// helps ensure that the key press down is correct
 function inputCheck(){
     timer++;
     for (let i = 0; i < 126; i++) {

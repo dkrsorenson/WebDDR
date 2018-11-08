@@ -31,6 +31,7 @@ function loop(){
     requestAnimationFrame(loop);
     checkForEscape();
     
+    // draws a certain scene
     switch (currentScene){
         case "start":
             drawStart(ctx, screenWidth, screenHeight);
@@ -49,5 +50,6 @@ function loop(){
             break;
     }
     
+    // ensures on hit is only once
     inputCheck();
 }
