@@ -46,7 +46,6 @@ function loop(){
             break;
         case "game":
             drawGame(ctx, screenWidth, screenHeight);
-            musicUpdate();
             break;
         case "end":
             drawEnd(ctx, screenWidth, screenHeight);
@@ -54,6 +53,8 @@ function loop(){
         default:
             break;
     }
+    
+    musicUpdate();
     
     // ensures on hit is only once
     inputCheck();

@@ -99,6 +99,9 @@ function musicUpdate() {
         generateArrowsBasedOnMusic(data);
     }
 
+    console.dir(volume);
+    audioElement.volume = volume / 100;
+    
     upArrowTimer++;
     leftArrowTimer++;
     rightArrowTimer++;

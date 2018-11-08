@@ -1,0 +1,55 @@
+Coehl Gleckner
+IGME 330-01
+11/7
+Project 2: Web DDR
+GITHUB link: https://github.com/dkrsorenson/WebDDR
+
+The only change we made was not having sound effects on the arrow hits, it was too much with the music playing
+
+Media
+Theres both bg music, song music, and menu sound effects in our game
+We have images that are the album cover (or similar imagery) or each song
+We have our own font thats DDRish
+We have a dancing sprite that uses a spritesheet
+The arrows are all drawn with a specific path that is entirely based on width height x and y, not hard coded
+
+Interaction
+No mouse controls as we said in proposal, just Arrow Keys (WASD in game for worse keyboards like my laptops), enter and escape
+Controls are very easy
+Key daemon is set up to capture multihits and iskeydown, not just iskey
+
+Usability
+Learning the game is very simple, just follow along to the beat and hit the arrows
+The play is able to easily tell if they are selecting a song or playing it, the screen look very different
+Some songs are easy, some are hard
+Custom UI buttons and sliders made in canvas, but no DOM elements used other than canvas
+5 "scenes", start options select game and end
+Names are on first screen
+
+Game Design
+We met exactly what we said we would do for the plan
+The game is playable, has easy to see health and has a working win/lose state (with highscores)
+You have a choice of song
+You can get higher scores in the game, which adds both depth in how well you can play and gives the player the ability to improve
+You either enjoy rythmn games or hate them
+The sprites only move across screen, but the text that depicts how well you did move randomly and fade out of existence after a second
+
+Coding
+I think we coded good
+We used Tech Stack 2, for reference
+We didn't end up using any external libraries for this project
+
+Thoughts on project
+I think the project went quite well, we got large sections of the game done together, and were able to effectively create a good portfolio piece
+If we had more time, I would refine the way we choose how arrows spawn. Its ok right now, but making it so that instead of being delayed by a few seconds
+being instant would be better
+Other features would include a real DDR pad, multiplayer, more songs, online song searching, and a spritesheet that follows your playing
+We used a sound effect from the nintendo switch, songs from youtube, and images from google to match those songs
+
+Partner Work
+Coehl worked in the game scene, creating and managing the spritesheet, the font, the health, the ways the arrows were made, the hit effects, the boop sound, arrow timing, and original scene management
+Dakota worked on the looping select a song, the general look, the main menu, the score system, the options menu, the songs, the curved boxes, the audio manipulation, and the song information themselves
+
+Grades
+Coehl: 98
+Dakota: 98.1

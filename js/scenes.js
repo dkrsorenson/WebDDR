@@ -101,8 +101,13 @@ function drawStart(ctx, screenWidth, screenHeight){
     dancerSprite.draw(ctx, danceFrame);
     
     ctx.save();
-    ctx.font = "30px Anton";
+    ctx.font = "50px Anton";
     ctx.fillStyle = "navy";
+    ctx.fillText("How To Play", screenWidth / 2 - 115, screenHeight - 250);
+    ctx.font = "25px Anton";
+    ctx.fillText("Use arrow keys to navigate menus, enter to select, escape to go back", 260, screenHeight - 200);
+    ctx.fillText("Use arrow keys or WASD to play in game, escape to return to menu", 285, screenHeight - 160);
+    ctx.font = "30px Anton";
     ctx.fillText("Dakota Sorenson", 15, screenHeight - 15);
     ctx.fillText("Coehl Gleckner", screenWidth - 200, screenHeight - 15);
     ctx.restore();
@@ -501,6 +506,11 @@ function optionsInit(){
     let volumeSlider = new SliderSprite(300,200,500,"cornflowerblue","black","black","Volume",30,5,100);
 
     sliders.push(volumeSlider);
+    for (let i = 0; i < 6; i++){
+        sliders[0].reduceValue();
+        sliders[0].moveSliderLeft();
+    }
+    volume = 40;
 }
 
 function drawOptionsMenu(ctx,screenWidth,screenHeight){
@@ -525,7 +535,6 @@ function drawOptionsMenu(ctx,screenWidth,screenHeight){
     for(let s of sliders){
         s.draw(ctx);
     }
-    
 
     ctx.font = "20px Anton";
     ctx.fillText("Press [Esc] to return to main menu.", screenWidth/2 - 150,screenHeight/2 + 150);
@@ -534,27 +543,31 @@ function drawOptionsMenu(ctx,screenWidth,screenHeight){
 
 function sliderScroll(){
     // left key
-    if(keysPressed["37"] && !down){
-        left = true;
-        if(sliders[currentPos].value > 0) {
-            sliders[currentPos].reduceValue();
-            sliders[currentPos].moveLeft();
+    for (let s of sliders){
+        if(keysPressed["37"] && !down){
+            left = true;
+            if(s.getValue() > 0) {
+                s.reduceValue();
+                s.moveSliderLeft();
+            }
         }
-    }
-    else if(!keysPressed["37"] && down){
-        left = false;
-    }
-    // right key
-    if(keysPressed["39"] && !down){
-        right = true;
-        if(sliders[currentPos].value <= 100) {
-            sliders[currentPos].addValue();
-            sliders[currentPos].moveRight();
+        else if(!keysPressed["37"] && down){
+            left = false;
         }
+        // right key
+        if(keysPressed["39"] && !down){
+            right = true;
+            if(s.getValue() < 100) {
+                s.addValue();
+                s.moveSliderRight();
+            }
+        }
+        else if(!keysPressed["39"] && down){
+            right = false;
+       }   
     }
-    else if(!keysPressed["39"] && down){
-        right = false;
-    }
+
+    volume = sliders[0].getValue();
 }
 
 // End functions
