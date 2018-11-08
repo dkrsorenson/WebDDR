@@ -1,7 +1,8 @@
 import { getRandomUnitVector } from './utilities.js';
 import { keysPressed } from './input.js'
-export { createArrowSprite, createRectSprite, createBackgroundSprite, ButtonSprite, ImageSprite, SpriteSheetSprite };
+export { createArrowSprite, createRectSprite, createBackgroundSprite, ButtonSprite, ImageSprite, SpriteSheetSprite, TextSprite };
 
+// sprite base class
 class Sprite {
     constructor(x=0,y=0,fwd={x:0,y:0},speed=0){
         this.x = x;
@@ -16,6 +17,7 @@ class Sprite {
     }
 }
 
+// image sprite class
 class ImageSprite {
     constructor(x=0,y=0,width=100,height=50,imageSrc){
         this.x = x;
@@ -40,6 +42,7 @@ class ImageSprite {
     
 }
 
+// creates the sprite sheet
 class SpriteSheetSprite extends ImageSprite{
     constructor(x=0,y=0,width=500,height=500,imageSrc,frameCount){
         super(x, y, width, height, imageSrc);
@@ -63,33 +66,20 @@ class SpriteSheetSprite extends ImageSprite{
         ctx.restore();
     }
 
+    // sets the position of the sprite sheet sprite
     SetPosition(x, y){
        this.x = x;
        this.y = y;
     }
 
+    // sets the scale of the sprite sheet sprite
     SetScale(x, y){
         this.scaleFactor.x = x;
         this.scaleFactor.y = y;
     }
 }
 
-class RectSprite extends Sprite{
-	constructor(x=0,y=0,fwd={x:0,y:1},speed=0, color="red", width=25, height=25){
-		super(x,y,fwd,speed);
-		this.color = color;
-		this.width = width;
-		this.height = height;
-	}
-
-	draw(ctx){ // NEW implementation for "Square Sprite"
-		ctx.save();
-        ctx.fillStyle = this.color;
-		ctx.fillRect(this.x, this.y, this.width, this.height);
-		ctx.restore();
-	}
-}
-
+// button sprite class
 class ButtonSprite {
 	constructor(x=0,y=0,fillColor="red", strokeColor="white",textColor = "black", width=25,height=25,text="Text",leftTextPadding=0,fontSize=20,lineWidth=3){
         this.x = x;
@@ -152,6 +142,7 @@ class ButtonSprite {
     
 }
 
+// arrow sprite class
 class ArrowSprite extends Sprite{
     constructor(x=0,y=0, color="red", width=25, height=25, angle=0, freeze=false){
         if (freeze){
@@ -160,6 +151,7 @@ class ArrowSprite extends Sprite{
         else {
             super(x, y, {x:-1,y:0}, 4);
         }
+        this.freeze = freeze;
         this.color = color;
 		this.width = width;
         this.height = height;
@@ -185,6 +177,7 @@ class ArrowSprite extends Sprite{
         }
 	}
 
+    // draw method
 	draw(ctx){
         ctx.save();
         // setting where the arrow draws
@@ -195,8 +188,7 @@ class ArrowSprite extends Sprite{
         ctx.translate(-x, -y);
 
         // check to see which color we should be using
-        //console.log(this.key + " " + keysPressed[this.key]);
-        if (keysPressed[this.key] || keysPressed[this.key2]){
+        if ((keysPressed[this.key] || keysPressed[this.key2]) && this.freeze){
             ctx.fillStyle = this.color;
 
         }
@@ -231,66 +223,125 @@ class ArrowSprite extends Sprite{
 		ctx.restore();
     }
 
+    // to scroll across the screen
     move() {
         this.x += this.fwd.x * this.speed;
         this.y += this.fwd.y * this.speed;
     }
 
+    // gets the position of the arrow
     getPosition() {
         return {x: this.x, y: this.y};
     }
 
+    // sets the position of the arrow
     setPosition(x, y) {
         this.x = x;
         this.y = y;
     }
 
-    checkDistance(x, checkDistance = 25){
+    // checks the distance between current position and target position, with a certain amount
+    checkDistance(x, checkDistance){
         let xPoint = x - this.x;
+        xPoint = Math.abs(xPoint);
 
         // distance check
-        if (Math.sqrt((xPoint * xPoint)) < checkDistance) {
-            //console.dir(Math.sqrt((xPoint * xPoint)));
+        if (xPoint < checkDistance) {
             return true;
         }
         return false;
     }
 
-    getKey(){
-        return this.key;
-    }
+    // These methods get the two keys of the arrow
+    getKey(){ return this.key; }
 
-    getKey2(){
-        return this.key2;
-    }
+    getKey2(){ return this.key2; }
 
-    setHit(){
-        this.hit = true;
-    }
+    // these two methods help the hit bool
+    setHit(){ this.hit = true; }
 
-    getHit(){
-        return this.hit;
-    }
+    getHit(){ return this.hit; }
 }
 
+// text sprite class
+class TextSprite extends Sprite{
+    constructor(x=0,y=0, color="red", text = ""){
+        super(x, y, getRandomUnitVector(), 1);
+        this.color = color;
+        this.text = text;
+        this.orgPosition = {x: x, y: y};
+        this.maxDis = 40;
+        this.alpha = 1;
+	}
+
+    // draw method
+	draw(ctx){
+        ctx.save();
+
+        // setting line size
+        ctx.font = "30px Anton";
+        ctx.lineWidth = 5;
+        ctx.fillStyle = this.color;
+        ctx.strokeStyle = "black";
+        if (this.checkDistance()){
+            this.alpha -= .05
+
+            if (this.alpha < 0) {
+                this.alpha = 0;
+            }
+        }
+        
+        ctx.globalAlpha = this.alpha;
+
+        // drawing the text
+        ctx.fillText(this.text,this.x,this.y);
+
+        ctx.fill();
+        ctx.stroke();
+		ctx.restore();
+    }
+
+    // to scroll across the screen, returns true if we have passed the distance
+    move() {
+        this.x += this.fwd.x * this.speed;
+        this.y += this.fwd.y * this.speed;
+    }
+
+    // checks the distance between OG position and current position
+    checkDistance(){
+        return Math.sqrt(((this.orgPosition.x - this.x) * (this.orgPosition.x - this.x)) + (this.orgPosition.y - this.y) * (this.orgPosition.y - this.y)) > this.maxDis;
+    }
+
+    // gets the alpha of the text sprite
+    getAlpha(){
+        return this.alpha;
+    }
+
+    
+    // these two methods help the hit bool
+    setHit(){ this.hit = true; }
+    
+    getHit(){ return this.hit; }
+}
+
+// creates the background image
 function createBackgroundSprite(){
     let x = 0;
     let y = 0;
     let width = 1200;
     let height = 800;
-    // let speed = 0;
-    // let fwd = {x:0, y:0};
     let background = new ImageSprite(x,y,width,height,"media/Background.png");
     return background;
 }
 
+// creates a rect sprite
 function createRectSprite(x=0, y=0,color="red",width=50,height=50){
     let speed = 0;
     let rect = new RectSprite(x,y,getRandomUnitVector(),speed,color,width,height);
     return rect;
 }
 
-
+// creates an arrow sprite
 function createArrowSprite(x=0,y=0, color="white", width=50, height=75, angle=0, freeze){
     let arrow = new ArrowSprite(x,y,color,width,height,angle, freeze);
     return arrow;
