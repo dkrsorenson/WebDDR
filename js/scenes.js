@@ -3,8 +3,9 @@ import {Song} from './song.js';
 import { getRandomColor, generateRandColor } from './utilities.js';
 import { setHealth, getHealth, getMaxHealth } from './gameManager.js'
 import { keysPressed, keysPressedDown } from './input.js';
+import { songOver, playBackgroundMusic, resetMusic } from './music.js';
 export { currentScene, drawStart, startInit, gameInit, drawGame, drawSongSelectScreen, menuScroll, 
-         songSelectInit, checkForEscape, createArrow, endInit, drawEnd, currentSong  }
+         songSelectInit, checkForEscape, createArrow, endInit, drawEnd, currentSong, resetValues  }
 
 let currentScene = "start";
 let spriteList = [];
@@ -77,9 +78,6 @@ function drawStart(ctx, screenWidth, screenHeight){
     // draw background
     drawBackgroundImage(ctx);
     drawTitle(ctx,screenWidth,screenHeight);
-    //drawBackgroundColors(ctx, screenWidth, screenHeight);
-    //backgroundSprite.draw(ctx);
-    //drawBackgroundColors(ctx, screenWidth, screenHeight);
     
     for (let i = 0; i < menuButtons.length; i++){
         if(i == currentPos) menuButtons[i].setFillColor("lightblue");
@@ -94,6 +92,13 @@ function drawStart(ctx, screenWidth, screenHeight){
 
     dancerSprite.draw(ctx, danceFrame);
     
+    ctx.save();
+    ctx.font = "30px Anton";
+    ctx.fillStyle = "navy";
+    ctx.fillText("Dakota Sorenson", 15, screenHeight - 15);
+    ctx.fillText("Coehl Gleckner", screenWidth - 200, screenHeight - 15);
+    ctx.restore();
+
     timer++;    
     DancerUpdate();
 }
@@ -119,6 +124,7 @@ function drawTitle(ctx,screenWidth,screenHeight){
     ctx.fillText("WEB DDR", screenWidth/2 - 200, 200);
     ctx.restore();
 }
+
 function drawBackgroundImage(ctx){
     bgImage.draw(ctx);
 }
@@ -147,7 +153,6 @@ function gameInit(){
 }
 
 function drawGame(ctx, screenWidth, screenHeight){
-    console.dir(dancerState);
     if (dancerState != currentScene){
         console.dir("HIT");
         dancerSprite.SetPosition(450, -20);
@@ -155,6 +160,23 @@ function drawGame(ctx, screenWidth, screenHeight){
         dancerState = currentScene;
         setHealth(getMaxHealth());
         spriteList = [];
+
+
+        // goal arrows
+        spriteList.push(createArrowSprite(60, upArrowY, "green", 75, 100, upAngle , true));
+        spriteList.push(createArrowSprite(60, rightArrowY, "blue", 75, 100, rightAngle, true));
+        spriteList.push(createArrowSprite(60, downArrowY, "red", 75, 100, downAngle, true));
+        spriteList.push(createArrowSprite(60, leftArrowY, "orange", 75, 100, leftAngle, true));
+    }
+
+    
+    if(getHealth() <= 0 || songOver == true) {
+        if(score > currentSong.highScore){
+            songs.find(s => s.songName == currentSong.songName).setHighScore(score);
+        } 
+        resetValues();
+        currentScene = "end";
+        return;
     }
 
     ctx.save();
@@ -230,11 +252,6 @@ function drawGameText(ctx, screenWidth, screenHeight, score){
     ctx.fillRect(screenWidth / 50, 63, 250, 40); // background of health bar
     ctx.fillStyle = "cornflowerblue";
     ctx.fillRect(screenWidth / 50 + 10, 68, (getHealth() / getMaxHealth()) * 230, 30); // background of health bar
-
-    if(getHealth() <= 0) {
-        if(score > currentSong.highScore) currentSong.highScore == score;
-        currentScene = "end";
-    }
 
     ctx.restore()
 }
@@ -321,8 +338,8 @@ function menuScroll(arr=[]){
             currentScene = "game";
         }
         else if(currentScene == "end"){
-            currentScene = "start";
             resetValues();
+            currentScene = "start";
         }
     }
     else if(!keysPressed["13"] && enter){
@@ -338,6 +355,7 @@ function checkForEscape(){
             currentScene = "start";
         }
         else if(currentScene == "game" || currentScene == "end"){
+            resetValues();
             currentScene = "start";
         }
     }
@@ -429,14 +447,6 @@ function drawSongSelectText(ctx,screenWidth,screenHeight) {
     let img = currentSong.image;
     img.setRectPos(screenWidth/2 + 75, screenHeight/2 - img.height);
     img.draw(ctx);
-
-    // ctx.fillStyle = currentSong.color;
-    // ctx.font = "30px Anton";
-    // ctx.fillText(currentSong.songName,screenWidth/2 + 175,screenHeight/2 + 50);
-    // ctx.fillText(currentSong.time,screenWidth/2 + 75,screenHeight/2 + 100);
-    // ctx.fillText(currentSong.highScore,screenWidth/2 + 150,screenHeight/2 + 150);
-    // ctx.fillText(currentSong.difficulty,screenWidth/2 + 125,screenHeight/2 + 200);
-    // ctx.restore();
 }
 
 function drawOptionsMenu(){
@@ -462,8 +472,8 @@ function drawEnd(ctx, screenWidth, screenHeight){
     // draw end game text
     ctx.save();
     ctx.fillStyle = "black";
-    ctx.font = "70px Anton";
-    ctx.fillText("Game Over",screenWidth/2 - 150, screenHeight/2 - 100);
+    ctx.font = "120px Anton";
+    ctx.fillText("Game Over",screenWidth/2 - 250, screenHeight/2 - 100);
 
     ctx.font = "30px Anton";
     ctx.fillText("Song: " + currentSong.songName, screenWidth/2 - 100,screenHeight/2 - 50);
@@ -475,5 +485,9 @@ function drawEnd(ctx, screenWidth, screenHeight){
 }
 
 function resetValues() {
+    spriteList = [];
+    resetMusic();
+    playBackgroundMusic();
+    currentPos = 0;
     score = 0;
 }

@@ -1,12 +1,13 @@
-import {createArrow,currentSong} from './scenes.js';
-export {musicInit, musicUpdate, playBackgroundMusic };
+import {createArrow,currentSong, currentScene, resetValues } from './scenes.js';
+export {musicInit, musicUpdate, playBackgroundMusic, songOver, resetMusic };
 
 // variables
 let audioElement, analyserNode;
 let NUM_SAMPLES = 256;
 let musicTimerMax = 30;
 let upArrowTimer, rightArrowTimer, leftArrowTimer, downArrowTimer;
-let playing = false, songOver = false;
+let playing = false;
+let songOver = false;
 let upMusicTimerMax, downMusicTimerMax, rightMusicTimerMax, leftMusicTimerMax;
 
 let backgroundSound = 'media/songs/backgroundmusic.mp3';
@@ -46,18 +47,16 @@ function createAnalyserNode(audioElement) {
 
 function playStream(audioElement,path){
     audioElement.src = path;
-    if(path == backgroundSound){
-        audioElement.addEventListener('ended', function() {
+    audioElement.addEventListener('ended', function() {
+        if(path == backgroundSound){
             this.currentTime = 0;
             this.play();
-        }, false);
-    }
-    else {
-        audioElement.addEventListener('ended', function() {
+        }
+        else {
             songOver = true;
             playing = false;
-        }, false);
-    }
+        }
+    }, false);
     audioElement.play();
     audioElement.volume = 0.3;
 }
@@ -68,22 +67,27 @@ function playBackgroundMusic() {
     } 
 }
 
+function resetMusic(){
+    playing = false;
+    songOver = false;
+}
+
 function musicUpdate() { 
 	// load and play default sound into audio element
-	if(playing == false && songOver == false) {
+	if(playing == false && songOver == false && currentScene == "game") {
         track = 'media/songs/' + currentSong.songName + '.mp3';
         playStream(audioElement,track);
         playing = true;
     }
-    
-    //if(upArrowTimer >= musicTimerMax || rightArrowTimer >= musicTimerMax || leftArrowTimer >= musicTimerMax || downArrowTimer >= musicTimerMax){
+
+    if(playing == true && songOver == false){
         // create a new array of 8-bit integers (0-255)
         let data = new Uint8Array(NUM_SAMPLES/2); 
     
         // populate the array with the frequency data
         analyserNode.getByteFrequencyData(data);
         generateArrowsBasedOnMusic(data);
-    //}
+    }
 
     upArrowTimer++;
     leftArrowTimer++;
