@@ -1,9 +1,11 @@
 import { createArrowSprite, createRectSprite, createBackgroundSprite, ButtonSprite, ImageSprite, SpriteSheetSprite } from './sprites.js'
-import {Song} from './song.js';
+import { Song } from './song.js';
 import { getRandomColor, generateRandColor } from './utilities.js';
-import { setHealth, getHealth, getMaxHealth } from './gameManager.js'
+import { setHealth, getHealth, getMaxHealth } from './gameManager.js';
 import { keysPressed, keysPressedDown } from './input.js';
+import { createHitText, textUpdate } from './hitChecker.js';
 import { songOver, playBackgroundMusic, resetMusic } from './music.js';
+
 export { currentScene, drawStart, startInit, gameInit, drawGame, drawSongSelectScreen, menuScroll, 
          songSelectInit, checkForEscape, createArrow, endInit, drawEnd, currentSong, resetValues  }
 
@@ -154,13 +156,11 @@ function gameInit(){
 
 function drawGame(ctx, screenWidth, screenHeight){
     if (dancerState != currentScene){
-        console.dir("HIT");
         dancerSprite.SetPosition(450, -20);
         dancerSprite.SetScale(2, 2);
         dancerState = currentScene;
         setHealth(getMaxHealth());
         spriteList = [];
-
 
         // goal arrows
         spriteList.push(createArrowSprite(60, upArrowY, "green", 75, 100, upAngle , true));
@@ -201,11 +201,18 @@ function drawGame(ctx, screenWidth, screenHeight){
         if (spriteList.indexOf(s) > 3) {
             // collision and hit check on arrow over goal arrow
             if (keysPressedDown[s.getKey()] || keysPressedDown[s.getKey2()]){
-                if (s.checkDistance(60, 25)) {
+                let xPoint = 60;
+                let hitDistance = 60;
+                let missDistance = hitDistance * 2;
+                if (s.checkDistance(xPoint, missDistance)) {
+                    if (s.checkDistance(xPoint, hitDistance + 20)) {
+                        score += 25;
+                        s.setHit();
+                        setHealth(getHealth() + 1);
+                    }
+                    
+                    createHitText(s.getPosition(), xPoint, missDistance);
                     s.setPosition(-100, -100);
-                    score += 25;
-                    s.setHit();
-                    setHealth(getHealth() + 1);
                 }
             }
         }
@@ -230,6 +237,9 @@ function drawGame(ctx, screenWidth, screenHeight){
             }
         }
     }
+
+    // updates the hit text
+    textUpdate(ctx);
 
     dancerSprite.draw(ctx, danceFrame);
 

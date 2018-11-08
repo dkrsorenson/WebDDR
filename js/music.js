@@ -4,7 +4,9 @@ export {musicInit, musicUpdate, playBackgroundMusic, songOver, resetMusic };
 // variables
 let audioElement, analyserNode;
 let NUM_SAMPLES = 256;
-let musicTimerMax = 30;
+
+// arrow timing variables
+let musicTimerMax = 240;   
 let upArrowTimer, rightArrowTimer, leftArrowTimer, downArrowTimer;
 let playing = false;
 let songOver = false;
@@ -14,14 +16,17 @@ let backgroundSound = 'media/songs/backgroundmusic.mp3';
 let track = backgroundSound;
 
 function musicInit(){
-    upMusicTimerMax = downMusicTimerMax = rightMusicTimerMax = leftMusicTimerMax = musicTimerMax;
+    upMusicTimerMax = (Math.random() * musicTimerMax + 1);
+    downMusicTimerMax = (Math.random() * musicTimerMax + 1);
+    rightMusicTimerMax = (Math.random() * musicTimerMax + 1);
+    leftMusicTimerMax = (Math.random() * musicTimerMax + 1);
     upArrowTimer = downArrowTimer = rightArrowTimer = leftArrowTimer = musicTimerMax;
 
 	// get reference to <audio> element on page
 	audioElement = document.querySelector('audio');
 	
 	// call our helper function and get an analyser node
-	analyserNode = createAnalyserNode(audioElement);
+    analyserNode = createAnalyserNode(audioElement);
 }
 
 function createAnalyserNode(audioElement) {
@@ -102,21 +107,29 @@ function generateArrowsBasedOnMusic(data){
     let rightNum = 6;
     let leftNum = 5;
 
+    let safetyNum = 60;
+
     for (let i = 0; i < data.length; i++) {
         // up arrow settings
         if (i == upNum && upArrowTimer >= upMusicTimerMax){
             if (data[i] > 25 && data[i] < 175){
                 createArrow(0);
                 upArrowTimer = 0;
-                upMusicTimerMax = (Math.random() * 30 + 1) + 30;
+                upMusicTimerMax = (Math.random() * musicTimerMax + 1);
+                if (upMusicTimerMax < safetyNum) {
+                    upMusicTimerMax = safetyNum;
+                }
             }
         }
         // right arrow settings
         if (i == rightNum && rightArrowTimer >= rightMusicTimerMax){
-            if (data[i] > 25 && data[i] < 150){
+            if (data[i] > 25 && data[i] < 175){
                 createArrow(1);
                 rightArrowTimer = 0;
-                rightMusicTimerMax = (Math.random() * 30 + 1) + 30;
+                rightMusicTimerMax = (Math.random() * musicTimerMax + 1);
+                if (rightMusicTimerMax < safetyNum){
+                    rightMusicTimerMax = safetyNum;
+                }
             }
         }
         // down arrow settings
@@ -124,7 +137,10 @@ function generateArrowsBasedOnMusic(data){
             if (data[i] > 25 && data[i] < 175){
                 createArrow(2);
                 downArrowTimer = 0;
-                downMusicTimerMax = (Math.random() * 30 + 1) + 30;
+                downMusicTimerMax = (Math.random() * musicTimerMax + 1);
+                if (downMusicTimerMax < safetyNum){
+                    downMusicTimerMax = safetyNum;
+                }
             }
         }
         // left arrow settings
@@ -132,7 +148,10 @@ function generateArrowsBasedOnMusic(data){
             if (data[i] > 25 && data[i] < 175){
                 createArrow(3);
                 leftArrowTimer = 0;
-                leftMusicTimerMax = (Math.random() * 30 + 1) + 30;
+                leftMusicTimerMax = (Math.random() * musicTimerMax + 1);
+                if (leftMusicTimerMax < safetyNum){
+                    leftMusicTimerMax = safetyNum;
+                }
             }
         }
     }
