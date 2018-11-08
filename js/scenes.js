@@ -4,7 +4,8 @@ import { getRandomColor, generateRandColor } from './utilities.js';
 import { setHealth, getHealth, getMaxHealth } from './gameManager.js';
 import { keysPressed, keysPressedDown } from './input.js';
 import { createHitText, textUpdate } from './hitChecker.js';
-import { songOver, playBackgroundMusic, resetMusic } from './music.js';
+import { songOver, playBackgroundMusic, resetMusic, playBeep } from './music.js';
+
 export { currentScene, drawStart, startInit, gameInit, drawGame, drawSongSelectScreen, menuScroll, 
          songSelectInit, checkForEscape, createArrow, endInit, drawEnd, currentSong, resetValues, 
          drawOptionsMenu, optionsInit, volume  }
@@ -13,6 +14,7 @@ let currentScene = "start";
 let spriteList = [];
 let backgroundSprite;
 let timer;
+let bgPlaying = false;
 
 // variables for song select screen
 let songs = [];
@@ -171,6 +173,9 @@ function drawGame(ctx, screenWidth, screenHeight){
         spriteList.push(createArrowSprite(60, rightArrowY, "blue", 75, 100, rightAngle, true));
         spriteList.push(createArrowSprite(60, downArrowY, "red", 75, 100, downAngle, true));
         spriteList.push(createArrowSprite(60, leftArrowY, "orange", 75, 100, leftAngle, true));
+
+        // setting background music to play again
+        bgPlaying = false;
     }
 
     
@@ -208,11 +213,25 @@ function drawGame(ctx, screenWidth, screenHeight){
                 let xPoint = 60;
                 let hitDistance = 60;
                 let missDistance = hitDistance * 2;
+
+                // miss
                 if (s.checkDistance(xPoint, missDistance)) {
+                    // ok hit
                     if (s.checkDistance(xPoint, hitDistance + 20)) {
-                        score += 25;
+                        let scoreAdd = 20;
                         s.setHit();
                         setHealth(getHealth() + 1);
+
+                        // good hit
+                        if (s.checkDistance(xPoint, hitDistance / 3)) {
+                            scoreAdd = 35;
+
+                            // excellent hit
+                            if (s.checkDistance(xPoint, hitDistance / 8)) {
+                                scoreAdd = 50;
+                            }
+                        }
+                        score += scoreAdd;
                     }
                     
                     createHitText(s.getPosition(), xPoint, missDistance);
@@ -279,6 +298,7 @@ function songSelectInit(){
     }
 }
 
+// Creates an arrow on a specific line
 function createArrow(num=Math.floor(Math.random() * 4)){
     let spawnX = 1200;
     if (num == 0){
@@ -299,8 +319,8 @@ function createArrow(num=Math.floor(Math.random() * 4)){
     }
 }
 
+// generates the songs
 function createSongs(){
-
     let arrSongNames = [ "Aint No Mountain High Enough", "Lay it down", "Lover Boy", "Outset Island", "Pokemon", 
                          "Scooby Doo", "Spongebob Square Pants"];
 
@@ -311,9 +331,9 @@ function createSongs(){
         let s = new Song(arrSongNames[i],0,0,0,"navy",imgSprite);
         songs.push(s);
     }
-
 }
 
+// the easy keypress menu scrolling
 function menuScroll(arr=[]){
     // up key
     if(keysPressed["38"] && !up){
@@ -322,6 +342,7 @@ function menuScroll(arr=[]){
             currentPos = arr.length - 1;
         }
         else currentPos--;
+        playBeep();
     }
     else if(!keysPressed["38"] && up){
         up = false;
@@ -337,6 +358,7 @@ function menuScroll(arr=[]){
     }
     else if(!keysPressed["40"] && down){
         down = false;
+        playBeep();
     }
     
     // enter key
@@ -364,6 +386,7 @@ function menuScroll(arr=[]){
     }
 }
 
+// Checking if we should jump back to another menu
 function checkForEscape(){
     // escape key
     if(keysPressed["27"] && !escape){
@@ -375,12 +398,14 @@ function checkForEscape(){
             resetValues();
             currentScene = "start";
         }
+        playBeep();
     }
     else if(!keysPressed["27"] && escape){
         escape = false;
     }
 }
 
+// drawing the song select
 function drawSongSelectScreen(ctx,screenWidth,screenHeight){
     menuScroll(songButtons);
     let x = 75, y = screenHeight/2;
@@ -442,6 +467,7 @@ function drawSongSelectScreen(ctx,screenWidth,screenHeight){
     drawSongSelectText(ctx,screenWidth,screenHeight);
 }
 
+// drawing the song select text
 function drawSongSelectText(ctx,screenWidth,screenHeight) {
     ctx.save();
     ctx.fillStyle = "black";
@@ -560,7 +586,9 @@ function drawEnd(ctx, screenWidth, screenHeight){
 function resetValues() {
     spriteList = [];
     resetMusic();
-    playBackgroundMusic();
+    if (!bgPlaying)
+        playBackgroundMusic();
+    bgPlaying = true;
     currentPos = 0;
     score = 0;
 }

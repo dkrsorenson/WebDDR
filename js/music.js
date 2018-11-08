@@ -1,5 +1,5 @@
 import {createArrow,currentSong, currentScene, resetValues, volume } from './scenes.js';
-export {musicInit, musicUpdate, playBackgroundMusic, songOver, resetMusic };
+export { musicInit, musicUpdate, playBackgroundMusic, songOver, resetMusic, playBeep };
 
 // variables
 let audioElement, analyserNode;
@@ -13,6 +13,8 @@ let songOver = false;
 let upMusicTimerMax, downMusicTimerMax, rightMusicTimerMax, leftMusicTimerMax;
 
 let backgroundSound = 'media/songs/backgroundmusic.mp3';
+let srcBeepSound = 'media/beep.mp3';
+let beepSound;
 let track = backgroundSound;
 
 function musicInit(){
@@ -27,6 +29,9 @@ function musicInit(){
 	
 	// call our helper function and get an analyser node
     analyserNode = createAnalyserNode(audioElement);
+
+    // making the menu changing sound
+    beepSound = new Sound(srcBeepSound);
 }
 
 function createAnalyserNode(audioElement) {
@@ -155,4 +160,28 @@ function generateArrowsBasedOnMusic(data){
             }
         }
     }
+}
+
+class Sound{
+    constructor(src){
+        this.sound = document.createElement("audio");
+        this.sound.src = src;
+        this.sound.setAttribute("preload", "auto");
+        this.sound.setAttribute("controls", "none");
+        this.sound.style.display = "none";
+        this.sound.volume = .2;
+        document.body.appendChild(this.sound);
+    }
+
+    play(){
+        this.sound.play();        
+    }
+
+    stop(){
+        this.sound.pause();        
+    }
+}
+
+function playBeep(){
+    beepSound.play();
 }
