@@ -13,6 +13,7 @@ let currentScene = "start";
 let spriteList = [];
 let backgroundSprite;
 let timer;
+let bgPlaying = false;
 
 // variables for song select screen
 let songs = [];
@@ -167,6 +168,9 @@ function drawGame(ctx, screenWidth, screenHeight){
         spriteList.push(createArrowSprite(60, rightArrowY, "blue", 75, 100, rightAngle, true));
         spriteList.push(createArrowSprite(60, downArrowY, "red", 75, 100, downAngle, true));
         spriteList.push(createArrowSprite(60, leftArrowY, "orange", 75, 100, leftAngle, true));
+
+        // setting background music to play again
+        bgPlaying = false;
     }
 
     
@@ -386,6 +390,7 @@ function checkForEscape(){
             resetValues();
             currentScene = "start";
         }
+        playBeep();
     }
     else if(!keysPressed["27"] && escape){
         escape = false;
@@ -506,8 +511,8 @@ function drawEnd(ctx, screenWidth, screenHeight){
     ctx.fillText("Game Over",screenWidth/2 - 250, screenHeight/2 - 100);
 
     ctx.font = "30px Anton";
-    ctx.fillText("Song: " + currentSong.songName, screenWidth/2 - 100,screenHeight/2 - 50);
-    ctx.fillText("High Score: " + currentSong.highScore, screenWidth/2 - 100,screenHeight/2);
+    ctx.fillText("Song: " + currentSong.songName, screenWidth/2 - 200,screenHeight/2 - 50);
+    ctx.fillText("High Score: " + currentSong.highScore, screenWidth/2 - 200,screenHeight/2);
 
     ctx.font = "20px Anton";
     ctx.fillText("Press [Enter] to return to main menu.", screenWidth/2 - 150,screenHeight/2 + 150);
@@ -517,7 +522,9 @@ function drawEnd(ctx, screenWidth, screenHeight){
 function resetValues() {
     spriteList = [];
     resetMusic();
-    playBackgroundMusic();
+    if (!bgPlaying)
+        playBackgroundMusic();
+    bgPlaying = true;
     currentPos = 0;
     score = 0;
 }
