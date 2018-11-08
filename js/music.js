@@ -1,4 +1,4 @@
-import {createArrow,currentSong, currentScene, resetValues } from './scenes.js';
+import {createArrow,currentSong, currentScene, resetValues, volume } from './scenes.js';
 export { musicInit, musicUpdate, playBackgroundMusic, songOver, resetMusic, playBeep };
 
 // variables
@@ -68,7 +68,7 @@ function playStream(audioElement,path){
         }
     }, false);
     audioElement.play();
-    audioElement.volume = 0.3;
+    audioElement.volume = volume / 100;
 }
 
 function playBackgroundMusic() {
