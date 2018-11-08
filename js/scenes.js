@@ -501,6 +501,11 @@ function optionsInit(){
     let volumeSlider = new SliderSprite(300,200,500,"cornflowerblue","black","black","Volume",30,5,100);
 
     sliders.push(volumeSlider);
+    for (let i = 0; i < 6; i++){
+        sliders[0].reduceValue();
+        sliders[0].moveSliderLeft();
+    }
+    volume = 40;
 }
 
 function drawOptionsMenu(ctx,screenWidth,screenHeight){
@@ -525,7 +530,6 @@ function drawOptionsMenu(ctx,screenWidth,screenHeight){
     for(let s of sliders){
         s.draw(ctx);
     }
-    
 
     ctx.font = "20px Anton";
     ctx.fillText("Press [Esc] to return to main menu.", screenWidth/2 - 150,screenHeight/2 + 150);
@@ -548,7 +552,7 @@ function sliderScroll(){
         // right key
         if(keysPressed["39"] && !down){
             right = true;
-            if(s.getValue() <= 100) {
+            if(s.getValue() < 100) {
                 s.addValue();
                 s.moveSliderRight();
             }
@@ -557,6 +561,8 @@ function sliderScroll(){
             right = false;
        }   
     }
+
+    volume = sliders[0].getValue();
 }
 
 // End functions
